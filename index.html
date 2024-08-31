@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khu công nghiệp Thốt Nốt</title>
+    <!-- Bootstrap MENU CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Liên kết đến file CSS -->
+    <!-- Nhúng CSS của Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+
+    <style>
+    /* Lớp CSS tùy chỉnh cho thông báo nhỏ hơn */
+    .custom-swal2-popup {
+        font-size: 14px !important; /* Kích thước chữ nhỏ hơn */
+        padding: 10px !important; /* Giảm khoảng cách giữa các phần tử */
+        max-width: 500px !important; /* Đặt chiều rộng tối đa cho thông báo */
+    }
+    .custom-swal2-title {
+        font-size: 16px !important; /* Kích thước tiêu đề nhỏ hơn */
+    }
+    .custom-swal2-content {
+        font-size: 14px !important; /* Kích thước nội dung nhỏ hơn */
+    }
+    .custom-swal2-button {
+        padding: 8px 16px !important; /* Kích thước nút nhỏ hơn */
+    }
+
+
+        .hidden-content {
+    display: none;
+}
+
+.blur-content {
+    filter: blur(5px);
+    pointer-events: none;
+}
+    </style>
+</head>
+<body>
+    <div class="background-image"></div> <!-- Lớp hình nền -->
+    <div id="menu"> <!-- Thẻ nhận CSS Menu -->  
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" id="navbarTitle" href="#">Giải pháp công nghệ số</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="datatable.html">Dữ liệu</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Thống kê
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                            <a class="dropdown-item" href="statistics.html">Thống kê lưu lượng</a>
+                            <a class="dropdown-item" href="statistics_2.html">Thống kê ngày nghỉ</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="notification.html">Tạo thông báo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">Liên hệ</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" id="loginLogoutButton">
+                        <a class="nav-link" href="#" id="loginButton">Đăng nhập</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    </div>
+    
+        
+         
+		<div class="container mt-3 mb-3"> <!-- Container Bootstrap -->
+			<div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
+				<div class="col-md-6"> <!-- Cột Bootstrap: chiều rộng 50% trên màn hình lớn -->
+                    <div class="protected-content"> <!-- Bảo vệ nội dung với khách-->	
+					<div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->	
+                        <div class="card-body">      
+							<h4 class="text-center mb-3">Chỉ số Đồng hồ Doanh nghiệp</h4>
+			<form id="registrationForm" onsubmit="submitForm(); return false;">
+                    
+			<div class="form-group">
+				<label for="tencongty">Tên Công ty:</label>
+				<select class="form-control" id="c_ty" name="c_ty" required>
+					<option value="" disabled selected>- Chọn công ty -</option>
+					<option value="Amicogen">Amicogen</option>
+					<option value="Ấn Độ Dương">Ấn Độ Dương</option>
+					<option value="Cá Việt Nam">Cá Việt Nam</option>
+					<option value="Đại Tây Dương">Đại Tây Dương</option>
+					<option value="NTSF">NTSF</option>
+				</select>
+			</div>
+			 
+			<div class="form-group">
+				<label for="Chiso">Chỉ số:</label>
+				<input type="number" class="form-control" placeholder=" Chỉ số đồng hồ... " id="chi_so" name="chi_so" required>
+			</div>
+	
+			<div class="form-group">
+				<label for="Ngayghi">Ngày ghi:</label>
+				<input type="date" class="form-control" placeholder=" Ngày, tháng, năm ... " id="ngay_ghi" name="ngay_ghi">
+			</div>
+	
+			<div class="form-group">
+				<label for="Ghichu">Ghi chú:</label>
+				<textarea class="form-control" placeholder="" id="ghi_chu" name="ghi_chu"></textarea>
+			</div>
+	
+            <div class="form-group">
+                <label for="file">Chọn hình ảnh</label>
+                <input type="file" id="file" class="form-control-file" accept="image/*">
+            </div>
+
+			<div class="form-group text-center">
+				<button type="button" onclick="submitForm_1()" class="btn btn-primary">Gửi thông tin</button>
+	
+			</div>
+	
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+</div>
+    <!-- Chèn các modal từ modals.html -->
+    <div id="modals-container"></div>
+
+		<!-- Bootstrap JS và jQuery (cần thiết cho Bootstrap) -->
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://apis.google.com/js/api.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="script.js"></script> <!-- Liên kết đến file JavaScript -->
+    	<script src="script.js"></script> <!-- Liên kết đến file JavaScript // Xử lý hành động gửi dữ liệu vào GG sheet1 -->
+<script>
+// HÀM LẤY NGÀY HIỆN TẠI DƯỚI DẠNG CHUỖI YYYY-MM-DD
+    function getCurrentDate() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2); // Tháng đếm từ 0, cần cộng thêm 1 và format về dạng 2 chữ số
+    var day = ('0' + today.getDate()).slice(-2); // Ngày format về dạng 2 chữ số
+    return year + '-' + month + '-' + day;
+    }
+    
+    function setMaxDateForNgayGhi() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2); // Tháng đếm từ 0, cần cộng thêm 1 và format về dạng 2 chữ số
+    var day = ('0' + today.getDate()).slice(-2); // Ngày format về dạng 2 chữ số
+    
+    var maxDate = year + '-' + month + '-' + day;
+    
+    // Đặt thuộc tính max cho input ngày ghi
+    document.getElementById('ngay_ghi').setAttribute('max', maxDate);
+    }
+    
+    // Gọi hàm setMaxDateForNgayGhi() khi tài liệu được tải
+    document.addEventListener('DOMContentLoaded', function() {
+    setMaxDateForNgayGhi();
+    });
+
+// ĐỊNH NGHĨA HÀM ĐỂ VIẾT HOA CHỮ CÁI ĐẦU CỦA CHUỖI
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+  // Lắng nghe sự kiện khi người dùng nhập liệu vào trường input
+  document.addEventListener('DOMContentLoaded', function() {
+    var inputField = document.getElementById('ghi_chu');
+  
+    inputField.addEventListener('input', function() {
+        // Lấy giá trị nhập vào từ trường input
+        var inputValue = inputField.value;
+  
+        // Chuyển đổi chuỗi thành dạng viết hoa chữ cái đầu
+        var capitalizedValue = capitalizeFirstLetter(inputValue);
+  
+        // Đặt lại giá trị đã chuyển đổi vào trường input
+        inputField.value = capitalizedValue;
+    });
+  });
+
+// Tải nội dung từ modals.html và chèn vào trang hiện tại
+$(document).ready(function() {
+    $('#modals-container').load('modals.html', function() {
+        // Sau khi modals.html được tải và chèn vào DOM, tải script liên quan đến modal
+        $.getScript('modals_dangnhap.js');
+    });
+});
+
+
+
+</script> 
+</body>
+</html>

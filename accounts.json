@@ -1,0 +1,9 @@
+{
+  "accounts": [
+    { "username": "MrToan", "password": "310594", "role": "admin" },
+    { "username": "Ngo", "password": "12345", "role": "user" },
+    { "username": "Tai", "password": "12345", "role": "user" },
+    { "username": "Can", "password": "12345", "role": "user" },
+    { "username": "Viet", "password": "12345", "role": "user" }
+  ]
+}

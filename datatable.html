@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="vn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dữ liệu</title>
+    <!-- Bootstrap MENU CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Liên kết đến file CSS -->
+    <!-- Nhúng CSS của Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        .hidden-content {
+    display: none;
+}
+
+.blur-content {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+    </style>
+</head>
+<body>
+    <div class="background-image"></div> <!-- Lớp hình nền -->
+    <div id="menu"> <!-- Thẻ nhận CSS Menu -->  
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" id="navbarTitle" href="#">Giải pháp công nghệ số</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="datatable.html">Dữ liệu</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Thống kê
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                            <a class="dropdown-item" href="statistics.html">Thống kê lưu lượng</a>
+                            <a class="dropdown-item" href="statistics_2.html">Thống kê ngày nghỉ</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="notification.html">Tạo thông báo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">Liên hệ</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" id="loginLogoutButton">
+                        <a class="nav-link" href="#" id="loginButton">Đăng nhập</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    </div>
+    <div id="table"> <!-- Thẻ nhận CSS table -->     
+        <div class="container mt-3 mb-3"> <!-- Container Bootstrap -->  
+            <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
+                <div class="col-md-12"> <!-- Cột Bootstrap: chiều rộng 100% trên màn hình lớn -->
+                    <div class="protected-content"> <!-- Bảo vệ nội dung với khách-->
+                    <div class="admin-content"> <!-- Bảo vệ nội dung của admin-->
+                        
+                    <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->   
+                        <div class="card-body">
+    
+    <h5 class="mb-3">Google Sheets Data QLCT 2024</h5>
+    
+    <!-- Ô tìm kiếm với Bootstrap -->
+    <div class="input-group mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="searchButton">Tìm kiếm</button>
+        </div>
+    </div>
+            
+    <!-- Bảng dữ liệu từ Google Sheets -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm" id="data-table">
+            <thead>
+                <tr id="header-row"></tr>
+            </thead>
+            <tbody id="data-body"></tbody>
+        </table>
+    </div>
+        <!-- Nút hiển thị tất cả -->
+        <button class="btn btn-primary mt-3" id="showAllButton" style="width: 100%;">Hiển thị tất cả</button>
+       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+</div>  
+</div>
+
+
+    <!-- Chèn các modal từ modals.html -->
+    <div id="modals-container"></div>
+    <div id="modalContainer"></div>
+    <!-- Chèn các thư viện JavaScript cần thiết -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="script.js"></script> <!-- Liên kết đến file JavaScript -->
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var columnsToHide = [6]; // Ẩn cột 
+    var dataRows = [];
+    var headerRowElement = document.getElementById('header-row'); // Định nghĩa biến này bên ngoài để sử dụng lại
+    gapi.load('client', loadSheetsApi);
+
+    // Khởi tạo API Google Sheets
+    function loadSheetsApi() {
+        gapi.client.init({
+            apiKey: 'AIzaSyANdbEb_R9E-tXldeDDoMTRfFX54NECou4',
+            discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+        }).then(function() {
+            fetchSheetData();
+        });
+    }
+
+    // Lấy dữ liệu từ Google Sheets1
+    function fetchSheetData() {
+        gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: '1SvIgfQfruhsLAQxTj3a3bN5KFx1s1todjYwa7EPusiQ',
+            range: 'Sheet1!A1:G'
+        }).then(function(response) {
+            var values = response.result.values;
+            if (values && values.length > 0) {
+                var headerRow = values[0];
+                dataRows = values.slice(1);
+                headerRowElement.innerHTML = ''; // Xóa nội dung cũ của tiêu đề
+                headerRow.forEach(function(cellValue, index) {
+                    if (!columnsToHide.includes(index)) {
+                        var th = document.createElement('th');
+                        th.textContent = cellValue;
+                        headerRowElement.appendChild(th);
+                    }
+                });
+                var editTh = document.createElement('th');
+                editTh.textContent = 'Sửa';
+                headerRowElement.appendChild(editTh);
+                var deleteTh = document.createElement('th');
+                deleteTh.textContent = 'Xóa';
+                headerRowElement.appendChild(deleteTh);
+                showDataRows(dataRows.slice(0, 7));
+            } else {
+                console.log('Không tìm thấy dữ liệu.');
+            }
+        }, function(error) {
+            console.error('Lỗi khi tải API Google Sheets:', error);
+        });
+    }
+
+    // Hiển thị các hàng dữ liệu
+    function showDataRows(rows) {
+        var dataBodyElement = document.getElementById('data-body');
+        dataBodyElement.innerHTML = '';
+        rows.forEach(function(row) {
+            var tr = document.createElement('tr');
+            row.forEach(function(cellValue, index) {
+                if (!columnsToHide.includes(index)) {
+                    var td = document.createElement('td');
+                    td.textContent = cellValue;
+                    tr.appendChild(td);
+                }
+            });
+            // Lấy ID từ cột đầu tiên của mỗi hàng
+            var id = row[0];
+            // Tạo nút chỉnh sửa
+            var editTd = document.createElement('td');
+            var editButton = document.createElement('button');
+            editButton.textContent = 'Sửa';
+            editButton.classList.add('btn', 'btn-warning', 'btn-sm');
+            editButton.dataset.id = id;
+            editButton.dataset.row = JSON.stringify(row); // Lưu trữ hàng dưới dạng chuỗi JSON
+
+            editButton.addEventListener('click', function() {
+                // Hiển thị modal xác nhận mật khẩu trước
+                $('#confirmModal').modal('show');
+                
+                // Xử lý sự kiện khi nhấn nút xác nhận mật khẩu
+                $('#confirmDeleteBtn').off().on('click', function() {
+                    var passwordInput = document.getElementById('passwordInput');
+                    var passwordFeedback = document.getElementById('passwordFeedback');
+                    
+                    // Kiểm tra mật khẩu
+                    if (passwordInput.value === '1111') {
+                        passwordFeedback.style.display = 'none';
+                        $('#confirmModal').modal('hide');
+                        
+                        // Sau khi mật khẩu đúng, hiển thị modal chỉnh sửa
+                        var editModalBody = document.getElementById('editModalBody');
+                        editModalBody.innerHTML = ''; // Xóa nội dung cũ của modal
+                        var rowData = JSON.parse(editButton.dataset.row);
+                        
+                        rowData.forEach(function(cellValue, index) {
+                            if (!columnsToHide.includes(index)) {
+                                var div = document.createElement('div');
+                                div.classList.add('form-group');
+                                var label = document.createElement('label');
+                                label.textContent = headerRowElement.children[index].textContent; // Sử dụng headerRowElement ở đây
+                                var input = document.createElement('input');
+                                input.type = 'text';
+                                input.classList.add('form-control');
+                                input.value = cellValue;
+                                input.dataset.index = index;
+                                
+                                // Kiểm tra nếu là cột 1, 2 hoặc 3, thêm thuộc tính readonly
+                                if (index === 0 || index === 1 || index === 2) {
+                                    input.readOnly = true;
+                                }
+                                
+                                div.appendChild(label);
+                                div.appendChild(input);
+                                editModalBody.appendChild(div);
+                            }
+                        });
+                        
+                        $('#editModal').modal('show');
+                        
+                        $('#saveEditBtn').off().on('click', function() {
+                            var updatedRow = rowData.map(function(cellValue, index) {
+                                if (!columnsToHide.includes(index)) {
+                                    var input = editModalBody.querySelector(`input[data-index="${index}"]`);
+                                    return input ? input.value : cellValue;
+                                } else {
+                                    return cellValue;
+                                }
+                            });
+                            updateRow(id, updatedRow);
+                            $('#editModal').modal('hide');
+                        });
+                    } else {
+                        passwordFeedback.style.display = 'block';
+                    }
+                });
+            });
+
+            editTd.appendChild(editButton);
+            tr.appendChild(editTd);
+
+            // Tạo nút xóa
+            var deleteTd = document.createElement('td');
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Xóa';
+            deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
+            deleteButton.dataset.id = id; // Gán ID cho thuộc tính dataset
+            deleteButton.addEventListener('click', function() {
+                $('#confirmModal').modal('show');
+                $('#confirmDeleteBtn').off().on('click', function() {
+                    var password = $('#passwordInput').val();
+                    // Kiểm tra mật khẩu ở đây
+                    if (password === '1111') {
+                        deleteRow(id); // Sử dụng ID khi gọi hàm xóa
+                        $('#confirmModal').modal('hide');
+                    } else {
+                        $('#passwordFeedback').show();
+                    }
+                });
+            });
+            deleteTd.appendChild(deleteButton);
+            tr.appendChild(deleteTd);
+            dataBodyElement.appendChild(tr);
+        });
+    }
+
+    // Hàm xóa hàng
+    function deleteRow(id) {
+        fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'delete', id: id }), // Thêm trường "action" là "delete"
+            mode: 'no-cors'
+        }).then(() => {
+            console.log('Đã xóa hàng thành công (giả định).');
+            fetchSheetData();
+            location.reload(); // Tải lại trang
+        }).catch(error => {
+            console.error('Lỗi khi xóa hàng:', error);
+        });
+    }
+
+    // Hàm cập nhật hàng
+    function updateRow(id, updatedRow) {
+        fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'edit', id: id, updatedRow: updatedRow }), // Thêm trường "action" là "edit"
+            mode: 'no-cors'
+        }).then(() => {
+            console.log('Đã cập nhật hàng thành công (giả định).');
+            fetchSheetData();
+            location.reload(); // Tải lại trang
+        }).catch(error => {
+            console.error('Lỗi khi cập nhật hàng:', error);
+        });
+    }
+
+
+    // Nút hiển thị tất cả / Thu gọn
+    var showAllButton = document.getElementById('showAllButton');
+    var isExpanded = false;
+    showAllButton.addEventListener('click', function() {
+        if (isExpanded) {
+            showDataRows(dataRows.slice(0, 7));
+            showAllButton.textContent = 'Hiển thị tất cả';
+            isExpanded = false;
+        } else {
+            showDataRows(dataRows);
+            showAllButton.textContent = 'Thu gọn';
+            isExpanded = true;
+        }
+    });
+
+
+    // Lắng nghe sự kiện khi nhập vào ô tìm kiếm
+    var searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function() {
+        var searchText = searchInput.value.trim().toLowerCase(); // Lấy văn bản tìm kiếm
+
+        // Lọc dữ liệu dựa trên văn bản tìm kiếm linh hoạt
+        var filteredRows = dataRows.filter(function(row) {
+            return row.some(function(cellValue) {
+                // Chuyển đổi giá trị ô dữ liệu thành chữ thường và kiểm tra xem có chứa searchText không
+                return cellValue.toString().toLowerCase().includes(searchText);
+            });
+        });
+
+        // Hiển thị các dòng đã lọc
+        showDataRows(filteredRows);
+    });
+        // Tải nội dung từ modals.html và chèn vào trang hiện tại
+        $(document).ready(function() {
+            $('#modals-container').load('modals.html', function() {
+                // Sau khi modals.html được tải và chèn vào DOM, tải script liên quan đến modal
+                $.getScript('modals_dangnhap.js');
+            });
+        });
+});    
+
+
+</script>
+</body>
+</html>

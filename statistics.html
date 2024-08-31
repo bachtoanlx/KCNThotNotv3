@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê dữ liệu</title>
+    <!-- Bootstrap MENU CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Liên kết đến file CSS -->
+    <!-- Nhúng CSS của Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+                .hidden-content {
+    display: none;
+}
+
+.blur-content {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+    </style>
+</head>
+<body>
+    <div class="background-image"></div> <!-- Lớp hình nền -->
+    <div id="menu"> <!-- Thẻ nhận CSS Menu -->  
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" id="navbarTitle" href="#">Giải pháp công nghệ số</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="datatable.html">Dữ liệu</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Thống kê
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                            <a class="dropdown-item" href="statistics.html">Thống kê lưu lượng</a>
+                            <a class="dropdown-item" href="statistics_2.html">Thống kê ngày nghỉ</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="notification.html">Tạo thông báo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">Liên hệ</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" id="loginLogoutButton">
+                        <a class="nav-link" href="#" id="loginButton">Đăng nhập</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    </div>
+
+<div id="table_2">   
+    <div class="container mt-3 mb-3"> <!-- Container Bootstrap -->  
+        <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
+            <div class="col-md-12"> <!-- Cột Bootstrap: chiều rộng 100% trên màn hình lớn -->
+                <div class="protected-content"> <!-- Bảo vệ nội dung với khách-->
+                <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->   
+                    <div class="card-body">
+
+                <h5 class="mb-3">Google Sheets Data QLCT 2024</h5>
+
+        <!-- Ô tìm kiếm với Bootstrap -->
+        <div class="input-group mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="searchButton">Tìm kiếm</button>
+            </div>
+        </div>
+        
+        <!-- Bảng dữ liệu từ Google Sheets -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm" id="data-table">
+            <thead>
+                <tr id="header-row"></tr>
+            </thead>
+            <tbody id="data-body"></tbody>
+        </table>
+        </div>
+        <!-- Nút hiển thị tất cả -->
+        <button class="btn btn-primary mt-3" id="showAllButton" style="width: 100%;">Hiển thị tất cả</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+    <!-- Chèn các modal từ modals.html -->
+    <div id="modals-container"></div>
+
+    <!-- Nhúng JavaScript của Bootstrap (cần thiết cho một số thành phần Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="script.js"></script> <!-- Liên kết đến file JavaScript -->
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var columnsToHide = [6]; // Chỉ số của các cột bạn muốn ẩn (tính từ 0)
+            var dataRows = []; // Mảng lưu trữ các dòng dữ liệu từ Google Sheets          
+            var isExpanded = false; // Biến toàn cục để theo dõi trạng thái bảng (mở rộng hay thu gọn)
+
+            // Load Sheets API và gọi hàm fetchSheetData để lấy dữ liệu
+            gapi.load('client', loadSheetsApi);
+
+            function loadSheetsApi() {
+                gapi.client.init({
+                    apiKey: 'AIzaSyANdbEb_R9E-tXldeDDoMTRfFX54NECou4',
+                    discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                }).then(function() {
+                    fetchSheetData();
+                });
+            }      
+
+            function fetchSheetData() {
+                gapi.client.sheets.spreadsheets.values.get({
+                    spreadsheetId: '1SvIgfQfruhsLAQxTj3a3bN5KFx1s1todjYwa7EPusiQ',
+                    range: 'Sheet3!B2:H10'
+                }).then(function(response) {
+                    var values = response.result.values;
+
+                    if (values && values.length > 0) {
+                        var headerRow = values[0]; // Lấy dòng đầu tiên làm tiêu đề
+                        dataRows = values.slice(1); // Lấy tất cả dòng dữ liệu (bỏ qua dòng đầu là tiêu đề)
+
+                        // Hiển thị tiêu đề của bảng
+                        var headerRowElement = document.getElementById('header-row');
+                        headerRowElement.innerHTML = ''; // Xóa tiêu đề hiện có
+                        headerRow.forEach(function(cellValue, index) {
+                            if (!columnsToHide.includes(index)) {
+                                var th = document.createElement('th');
+                                th.textContent = cellValue;
+                                headerRowElement.appendChild(th);
+                            }
+                        });
+
+                        // Hiển thị dữ liệu dựa trên trạng thái hiện tại
+                        if (isExpanded) {
+                            showDataRows(dataRows); // Hiển thị tất cả dữ liệu nếu đang mở rộng
+                        } else {
+                            showDataRows([dataRows[0], dataRows[2], dataRows[4]]); // Hiển thị chế độ cơ bản
+                        }
+                    } else {
+                        console.log('No data found.');
+                    }
+                }, function(error) {
+                    console.error('Error loading Google Sheets API:', error);
+                });
+            }
+
+            function showDataRows(rows) {
+                var dataBodyElement = document.getElementById('data-body');
+                dataBodyElement.innerHTML = ''; // Xóa dữ liệu hiện có trong tbody
+
+                // Hiển thị các dòng dữ liệu mới
+                rows.forEach(function(row) {
+                    var tr = document.createElement('tr');
+                    row.forEach(function(cellValue, index) {
+                        if (!columnsToHide.includes(index)) {
+                            var td = document.createElement('td');
+                            td.textContent = cellValue;
+                            tr.appendChild(td);
+                        }
+                    });
+                    dataBodyElement.appendChild(tr);
+                });
+            }
+
+            // Lắng nghe sự kiện khi nhấn nút "Hiển thị tất cả" hoặc "Thu gọn"
+            var showAllButton = document.getElementById('showAllButton');
+            showAllButton.addEventListener('click', function() {
+                if (isExpanded) {
+                    showDataRows([dataRows[0], dataRows[2], dataRows[4]]); // Hiển thị chế độ cơ bản
+                    showAllButton.textContent = 'Hiển thị tất cả'; // Đổi nội dung của nút
+                    isExpanded = false; // Cập nhật trạng thái
+                } else {
+                    showDataRows(dataRows); // Hiển thị tất cả dữ liệu
+                    showAllButton.textContent = 'Thu gọn'; // Đổi nội dung của nút
+                    isExpanded = true; // Cập nhật trạng thái
+                }
+            });
+
+            fetchSheetData();
+
+            // Cập nhật dữ liệu sau mỗi 15 giây và giữ nguyên trạng thái bảng
+            setInterval(function() {
+                fetchSheetData();
+            }, 15000);
+
+            // Lắng nghe sự kiện khi nhập vào ô tìm kiếm
+            var searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                var searchText = searchInput.value.trim().toLowerCase(); 
+
+                var filteredRows = dataRows.filter(function(row) {
+                    return row.some(function(cellValue) {
+                        return cellValue.toString().toLowerCase().includes(searchText);
+                    });
+                });
+
+                showDataRows(filteredRows);
+            });
+        });
+
+            // Tải nội dung từ modals.html và chèn vào trang hiện tại
+            $(document).ready(function() {
+                $('#modals-container').load('modals.html', function() {
+                    // Sau khi modals.html được tải và chèn vào DOM, tải script liên quan đến modal
+                    $.getScript('modals_dangnhap.js');
+                });
+             });
+</script>
+</body>
+</html>
