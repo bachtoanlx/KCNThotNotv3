@@ -3,7 +3,17 @@ function toggleMenu() {
   var menu = document.querySelector('.menu');
   menu.style.display = (menu.style.display === 'block' || menu.style.display === '') ? 'none' : 'block';
 }
-
+// Hàm để đóng menu
+function closeMenu() {
+    const navbarCollapse = document.getElementById('navbarNav');
+    if (navbarCollapse.classList.contains('show')) {
+        // Nếu menu đang mở, đóng nó
+        const collapse = new bootstrap.Collapse(navbarCollapse, {
+            toggle: false
+        });
+        collapse.hide();
+    }
+}
 $(document).ready(function() {
   // Ẩn tất cả nội dung khi trang tải xong
   $('.protected-content').addClass('hidden-content');
@@ -47,7 +57,8 @@ $(document).ready(function() {
           $('#loginButton').text('Đăng nhập');
           $('#userInfo').hide();
           localStorage.removeItem('loggedInUser');
-          toastr.success('Bạn đã đăng xuất thành công!', 'Thành công'); // Thông báo bằng Toastr
+          toastr.success('Bạn đã đăng xuất thành công!', 'Đăng xuất'); // Thông báo bằng Toastr
+          closeMenu(); // Đóng menu khi đăng xuất
           $('.protected-content').addClass('hidden-content'); // Ẩn tất cả nội dung khi đăng xuất
       }
   });
@@ -69,13 +80,15 @@ $(document).ready(function() {
           localStorage.setItem('loggedInUser', username);
 
           if (loggedInUser.role === 'admin') {
+              closeMenu(); // Đóng menu khi đăng nhập admin
               $('.protected-content').removeClass('hidden-content'); // Hiển thị nội dung cho admin
           } else {
+              closeMenu(); // Đóng menu khi đăng xnhập user
               $('.protected-content').removeClass('hidden-content'); // Hiển thị nội dung cho user
               $('.admin-content').addClass('blur-content'); // Làm mờ nội dung chỉ dành cho admin
           }
       } else {
-          alert('Tên đăng nhập hoặc mật khẩu không chính xác!');
+          toastr.error('Tên đăng nhập hoặc mật khẩu không chính xác!', 'Lỗi'); // Thông báo bằng Toastr 
       }
   });
 });
