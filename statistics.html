@@ -132,7 +132,7 @@
             function fetchSheetData() {
                 gapi.client.sheets.spreadsheets.values.get({
                     spreadsheetId: '1SvIgfQfruhsLAQxTj3a3bN5KFx1s1todjYwa7EPusiQ',
-                    range: 'Sheet3!B2:H10'
+                    range: 'Sheet3!B2:H11'
                 }).then(function(response) {
                     var values = response.result.values;
 
@@ -155,7 +155,7 @@
                         if (isExpanded) {
                             showDataRows(dataRows); // Hiển thị tất cả dữ liệu nếu đang mở rộng
                         } else {
-                            showDataRows([dataRows[0], dataRows[2], dataRows[4]]); // Hiển thị chế độ cơ bản
+                            showDataRows([dataRows[0], dataRows[1], dataRows[2], dataRows[3], dataRows[4], dataRows[5]]); // Hiển thị chế độ cơ bản
                         }
                     } else {
                         console.log('No data found.');
@@ -187,7 +187,7 @@
             var showAllButton = document.getElementById('showAllButton');
             showAllButton.addEventListener('click', function() {
                 if (isExpanded) {
-                    showDataRows([dataRows[0], dataRows[2], dataRows[4]]); // Hiển thị chế độ cơ bản
+                    showDataRows([dataRows[0], dataRows[1], dataRows[2], dataRows[3], dataRows[4], dataRows[5]]); // Hiển thị chế độ cơ bản
                     showAllButton.textContent = 'Hiển thị tất cả'; // Đổi nội dung của nút
                     isExpanded = false; // Cập nhật trạng thái
                 } else {
