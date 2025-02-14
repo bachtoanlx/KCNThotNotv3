@@ -4,6 +4,8 @@
     { "username": "Ngo", "password": "12345", "role": "user" },
     { "username": "Tai", "password": "12345", "role": "user" },
     { "username": "Can", "password": "12345", "role": "user" },
-    { "username": "Viet", "password": "12345", "role": "user" }
+    { "username": "Viet", "password": "12345", "role": "user" },
+    { "username": "Duong", "password": "12345", "role": "user" },
+    { "username": "Nhanh", "password": "12345", "role": "user" }
   ]
 }
