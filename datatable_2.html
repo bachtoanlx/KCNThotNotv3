@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dữ liệu</title>
+    <title>Dữ liệu thông báo nghỉ</title>
     <!-- Bootstrap MENU CSS -->
     <link rel="stylesheet" href="styles.css"> <!-- Liên kết đến file CSS -->
     <!-- Nhúng CSS của Bootstrap -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <style>    
-    .hidden-content {
+    <style>
+        .hidden-content {
     display: none;
 }
 
@@ -24,47 +24,42 @@
 <body>
     <div class="background-image"></div> <!-- Lớp hình nền -->
     <div id="menu-container"></div>
-    <div class="protected-content"> <!-- Bảo vệ nội dung với khách-->	
+    <div class="protected-content"> <!-- Bảo vệ nội dung với khách-->	 
 
-    
-    <div id="table"> <!-- Thẻ nhận CSS table -->     
+    <div id="table_3"> <!-- Thẻ nhận CSS table -->     
         <div class="container mt-3 mb-3"> <!-- Container Bootstrap -->  
             <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
                 <div class="col-md-12"> <!-- Cột Bootstrap: chiều rộng 100% trên màn hình lớn -->
                     <div class="admin-content"> <!-- Bảo vệ nội dung của admin-->    
                     <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->   
-                        <div class="card-body"> 
-                            <h5 class="mb-3">Google Sheets Data QLCT 2024</h5>
+                        <div class="card-body">
+                        <h5 class="mb-3">Google Sheets Data QLCT 2024</h5>
     
-                            <!-- Ô tìm kiếm với Bootstrap -->
-                            <div class="input-group mb-3">
-                                <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa tìm kiếm..."> 
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button" id="searchButton">Tìm kiếm</button>
-                                </div>
+                        <!-- Ô tìm kiếm với Bootstrap -->
+                        <div class="input-group mb-3">
+                            <input type="text" id="searchInput" class="form-control" placeholder="Nhập từ khóa tìm kiếm...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="searchButton">Tìm kiếm</button>
                             </div>
-
-
-                            
-
-                            <!-- Bảng dữ liệu từ Google Sheets -->
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-sm" id="data-table">
-                                    <thead>
-                                        <tr id="header-row"></tr>
-                                    </thead>
-                                    <tbody id="data-body"></tbody>
-                                </table>
-                            </div>
-
-                            <div style="float: right;">
-                                <label for="rowsPerPage">Số hàng hiển thị:</label>
-                                <select id="rowsPerPage" style="border: none;">
-                                  <option value="7">7 hàng</option>
-                                  <option value="15">15 hàng</option>
-                                  <option value="all">Tất cả</option>
-                                </select>
-                            </div>
+                        </div>
+                                
+                        <!-- Bảng dữ liệu từ Google Sheets -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm" id="data-table">
+                                <thead>
+                                    <tr id="header-row"></tr>
+                                </thead>
+                                <tbody id="data-body"></tbody>
+                            </table>
+                        </div>
+                        <div style="float: right;">
+                            <label for="rowsPerPage">Số hàng hiển thị:</label>
+                            <select id="rowsPerPage" style="border: none;">
+                              <option value="7">7 hàng</option>
+                              <option value="15">15 hàng</option>
+                              <option value="all">Tất cả</option>
+                            </select>
+                        </div>       
                     </div>
                 </div>
             </div>
@@ -73,7 +68,6 @@
 </div>    
 </div>  
 </div>
-
     <!-- Chèn các modal từ modals.html -->
     <div id="modals-container"></div>
     <div id="modalContainer"></div>
@@ -81,14 +75,13 @@
     <!-- Chèn các thư viện JavaScript cần thiết -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="script.js"></script> <!-- Liên kết đến file JavaScript -->
 
     <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var columnsToHide = [6]; // Ẩn cột 
+    var columnsToHide = [5]; // Ẩn cột 
     var dataRows = [];
     var headerRowElement = document.getElementById('header-row'); // Định nghĩa biến này bên ngoài để sử dụng lại
     gapi.load('client', loadSheetsApi);
@@ -103,11 +96,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Lấy dữ liệu từ Google Sheets1
+    // Lấy dữ liệu từ Google Sheets2
     function fetchSheetData() {
         gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: '1SvIgfQfruhsLAQxTj3a3bN5KFx1s1todjYwa7EPusiQ',
-            range: 'Sheet1!A1:G'
+            range: 'Sheet2!A1:F'
         }).then(function(response) {
             var values = response.result.values;
             if (values && values.length > 0) {
@@ -127,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 var deleteTh = document.createElement('th');
                 deleteTh.textContent = 'Xóa';
                 headerRowElement.appendChild(deleteTh);
-
                 // Hiển thị số hàng mặc định (7 hàng ban đầu)
                 showDataRows(dataRows.slice(0, 7));
             } else {
@@ -161,20 +153,24 @@ document.addEventListener('DOMContentLoaded', function() {
             editButton.dataset.id = id;
             editButton.dataset.row = JSON.stringify(row); // Lưu trữ hàng dưới dạng chuỗi JSON
 
-            // Xử lý sự kiện khi nhấn nút chỉnh sửa
+// Xử lý sự kiện khi nhấn nút chỉnh sửa
             editButton.addEventListener('click', function() {
                 // Hiển thị modal xác nhận mật khẩu trước
                 $('#confirmModal').modal('show');
                 
+                // Xử lý sự kiện khi nhấn nút xác nhận mật khẩu
                 $('#confirmDeleteBtn').off().on('click', function() {
                     var passwordInput = document.getElementById('passwordInput');
                     var passwordFeedback = document.getElementById('passwordFeedback');
                     
+                    // Kiểm tra mật khẩu
                     if (passwordInput.value === '1111') {
                         passwordFeedback.style.display = 'none';
                         $('#confirmModal').modal('hide');
+                        
+                        // Sau khi mật khẩu đúng, hiển thị modal chỉnh sửa
                         var editModalBody = document.getElementById('editModalBody');
-                        editModalBody.innerHTML = ''; 
+                        editModalBody.innerHTML = ''; // Xóa nội dung cũ của modal
                         var rowData = JSON.parse(editButton.dataset.row);
                         
                         rowData.forEach(function(cellValue, index) {
@@ -182,13 +178,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                 var div = document.createElement('div');
                                 div.classList.add('form-group');
                                 var label = document.createElement('label');
-                                label.textContent = headerRowElement.children[index].textContent;
+                                label.textContent = headerRowElement.children[index].textContent; // Sử dụng headerRowElement ở đây
                                 var input = document.createElement('input');
                                 input.type = 'text';
                                 input.classList.add('form-control');
                                 input.value = cellValue;
                                 input.dataset.index = index;
                                 
+                                // Kiểm tra nếu là cột 1, 2 hoặc 3, thêm thuộc tính readonly
                                 if (index === 0 || index === 1 || index === 2) {
                                     input.readOnly = true;
                                 }
@@ -227,13 +224,14 @@ document.addEventListener('DOMContentLoaded', function() {
             var deleteButton = document.createElement('button');
             deleteButton.textContent = 'Xóa';
             deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
-            deleteButton.dataset.id = id;
+            deleteButton.dataset.id = id; // Gán ID cho thuộc tính dataset
             deleteButton.addEventListener('click', function() {
                 $('#confirmModal').modal('show');
                 $('#confirmDeleteBtn').off().on('click', function() {
                     var password = $('#passwordInput').val();
+                    // Kiểm tra mật khẩu ở đây
                     if (password === '1111') {
-                        deleteRow(id);
+                        deleteRow(id); // Sử dụng ID khi gọi hàm xóa
                         $('#confirmModal').modal('hide');
                     } else {
                         $('#passwordFeedback').show();
@@ -245,9 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dataBodyElement.appendChild(tr);
         });
     }
-
-
-// Lắng nghe sự kiện khi nhập vào ô tìm kiếm
+            // Lắng nghe sự kiện khi nhập vào ô tìm kiếm
 var searchInput = document.getElementById('searchInput');
 var rowsPerPageSelect = document.getElementById('rowsPerPage');
 var currentRowsPerPage = 7; // Mặc định hiển thị 7 dòng
@@ -296,9 +292,8 @@ searchInput.addEventListener('blur', function() {
         }
     });
 });  
-
     // Hàm xóa hàng
-function deleteRow(id) {
+    function deleteRow(id) {
     $('#loadingModal').modal('show');
     fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
         method: 'POST',
@@ -345,19 +340,16 @@ function updateRow(id, updatedRow) {
     });
 }
 
-
         // Tải nội dung từ modals.html và chèn vào trang hiện tại
         $(document).ready(function() {
             $('#modals-container').load('modals.html');
         });
-
-
         // Sử dụng JavaScript để tải nội dung menu từ menu.html
         $(document).ready(function() {
             // Chèn menu vào phần tử có ID 'menu-container'
             $('#menu-container').load('menu.html');
         });
-   
+  
 
 
 </script>
