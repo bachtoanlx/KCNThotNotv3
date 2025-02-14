@@ -26,20 +26,41 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.html">Trang chủ</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="datatable.html">Dữ liệu</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dữ liệu
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                            <a class="dropdown-item" href="datatable.html">Đồng hồ</a>
+                            <a class="dropdown-item" href="datatable_2.html">Thông báo nghỉ</a>
+                            <a class="dropdown-item" href="test.html">Điện sản xuất</a>
+                            <a class="dropdown-item" href="test.html">Nước sinh hoạt</a>
+                            <a class="dropdown-item" href="test.html">Điện mặt trời</a>
+                        </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Thống kê
+                            Báo cáo
                         </a>
                         <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
-                            <a class="dropdown-item" href="statistics.html">Thống kê lưu lượng</a>
-                            <a class="dropdown-item" href="statistics_2.html">Thống kê ngày nghỉ</a>
+                            <a class="dropdown-item" href="statistics.html">BC Lưu lượng</a>
+                            <a class="dropdown-item" href="statistics_2.html">BC Ngày nghỉ</a>
+                            <a class="dropdown-item" href="test.html">BC Điện sản xuất</a>
+                            <a class="dropdown-item" href="test.html">BC Nước sinh hoạt</a>
+                            <a class="dropdown-item" href="test.html">BC Điện mặt trời</a>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="notification.html">Tạo thông báo</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Tạo Thông báo
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                            <a class="dropdown-item" href="index.html">Lưu lượng đồng hồ</a>
+                            <a class="dropdown-item" href="notification.html">Doanh nghiệp ngưng sản xuất</a>
+                            <a class="dropdown-item" href="test.html">Sản lượng Điện sản xuất</a>
+                            <a class="dropdown-item" href="test.html">Sản lượng Nước sinh hoạt</a>
+                            <a class="dropdown-item" href="test.html">Sản lượng Điện mặt trời</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="about.html">Liên hệ</a>
@@ -54,7 +75,6 @@
         </div>
     </nav>
     </div>
-
 
 <div class="container mt-3 mb-3">
     <!-- Container Bootstrap -->
@@ -189,12 +209,9 @@
 <script src="script.js"></script> <!-- Liên kết đến file JavaScript -->
 
 <script>
-    // Tải nội dung từ modals.html và chèn vào trang hiện tại
-    $(document).ready(function() {
-            $('#modals-container').load('modals.html', function() {
-                // Sau khi modals.html được tải và chèn vào DOM, tải script liên quan đến modal
-                $.getScript('modals_dangnhap.js');
-            });
+        // Tải nội dung từ modals.html và chèn vào trang hiện tại
+        $(document).ready(function() {
+            $('#modals-container').load('modals.html');
         });
 </script>
 

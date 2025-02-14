@@ -1,0 +1,287 @@
+
+<!-- Nhúng CSS của Bootstrap -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<style>
+    /* Đặt kiểu mặc định cho menu (ẩn menu trên màn hình nhỏ) */
+.menu {
+    display: none; /* Ẩn menu trên màn hình nhỏ */
+    background-color: #333;
+    padding: 10px;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu ul li {
+    margin: 10px 0;
+}
+
+.menu ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Định kiểu cho nút menu */
+.menu-toggle {
+    display: none; /* Ẩn nút menu trên màn hình lớn */
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Các kiểu cho màn hình nhỏ hơn 768px (chẳng hạn như di động) */
+@media (max-width: 768px) {
+    .menu {
+        display: block; /* Hiển thị menu trên màn hình nhỏ khi nút menu được nhấn */
+    }
+
+    .menu-toggle {
+        display: block; /* Hiển thị nút menu trên màn hình nhỏ */
+    }
+
+    .menu {
+        display: none; /* Menu ẩn mặc định trên màn hình nhỏ */
+    }
+}
+
+/* Các kiểu cho màn hình lớn hơn 768px (chẳng hạn như máy tính bảng hoặc máy tính để bàn) */
+@media (min-width: 769px) {
+    .menu {
+        display: block; /* Hiển thị menu trên màn hình lớn */
+    }
+
+    .menu-toggle {
+        display: none; /* Ẩn nút menu trên màn hình lớn */
+    }
+}
+
+
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" id="navbarTitle" href="#">Giải pháp công nghệ số</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Trang chủ</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dữ liệu
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                        <a class="dropdown-item" href="datatable.html">Đồng hồ</a>
+                        <a class="dropdown-item" href="datatable_2.html">Thông báo nghỉ</a>
+                        <a class="dropdown-item" href="datatable_3.html">Điện sản xuất</a>
+                        <a class="dropdown-item" href="datatable_4.html">Nước sinh hoạt</a>
+                        <a class="dropdown-item" href="datatable_5.html">Điện mặt trời</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Báo cáo
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                        <a class="dropdown-item" href="statistics.html">BC Lưu lượng</a>
+                        <a class="dropdown-item" href="statistics_2.html">BC Ngày nghỉ</a>
+                        <a class="dropdown-item" href="statistics_3.html">BC Điện sản xuất</a>
+                        <a class="dropdown-item" href="statistics_4.html">BC Nước sinh hoạt</a>
+                        <a class="dropdown-item" href="statistics_5.html">BC Điện mặt trời</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="statisticsDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tạo Thông báo
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="statisticsDropdown">
+                        <a class="dropdown-item" href="index.html">Lưu lượng đồng hồ</a>
+                        <a class="dropdown-item" href="notification.html">Doanh nghiệp ngưng sản xuất</a>
+                        <a class="dropdown-item" href="notification_2.html">Sản lượng Điện sản xuất</a>
+                        <a class="dropdown-item" href="notification_3.html">Sản lượng Nước sinh hoạt</a>
+                        <a class="dropdown-item" href="notification_4.html">Sản lượng Điện mặt trời</a>
+                        <a class="dropdown-item" href="notification_5.html">Thu phí nước thải</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">Liên hệ</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" id="loginLogoutButton">
+                    <a class="nav-link" href="#" id="loginButton">Đăng nhập</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Modal Menu Đăng nhập -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginFormElement">
+                    <div class="form-group">
+                        <label for="username">Tên đăng nhập:</label>
+                        <input type="text" class="form-control" id="username" name="username" autocomplete="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Mật khẩu:</label>
+                        <input type="password" class="form-control" id="password" name="password" autocomplete="current-password">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="loginSubmitButton">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap JS và jQuery (cần thiết cho Bootstrap) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    // Xử lý Menu -->
+function toggleMenu() {
+    var menu = document.querySelector('.menu');
+    menu.style.display = (menu.style.display === 'block' || menu.style.display === '') ? 'none' : 'block';
+}
+
+// Hàm để đóng menu
+function closeMenu() {
+    const navbarCollapse = document.getElementById('navbarNav');
+    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+        // Nếu menu đang mở, đóng nó
+        const collapse = new bootstrap.Collapse(navbarCollapse, {
+            toggle: false
+        });
+        collapse.hide();
+    }
+}
+
+// Hàm kiểm tra quyền truy cập và áp dụng lớp bảo vệ
+function checkAccess() {
+    const userHasAccess = localStorage.getItem('loggedInUser') !== null; // Thay đổi điều kiện nếu cần
+    const protectedContent = document.querySelectorAll('.protected-content');
+    if (userHasAccess) {
+        protectedContent.forEach(element => {
+            element.classList.remove('hidden-content');
+        });
+    } else {
+        protectedContent.forEach(element => {
+            element.classList.add('hidden-content');
+        });
+    }
+}
+
+// Đọc dữ liệu từ tệp JSON và xử lý đăng nhập
+function loadAccounts() {
+    $.getJSON('accounts.json', function(data) {
+        // Lưu danh sách tài khoản vào localStorage
+        localStorage.setItem('accounts', JSON.stringify(data.accounts));
+
+        // Kiểm tra nếu đã đăng nhập trước đó
+        var savedUser = localStorage.getItem('loggedInUser');
+        if (savedUser) {
+            var accounts = JSON.parse(localStorage.getItem('accounts'));
+            var user = accounts.find(account => account.username === savedUser);
+
+            if (user) {
+                $('#navbarTitle').text('Xin chào, ' + savedUser);
+                $('#loginButton').text('Đăng xuất');
+
+                if (user.role === 'admin') {
+                    $('.admin-content').removeClass('blur-content'); // Hiển thị nội dung cho admin
+                } else {
+                    $('.admin-content').addClass('blur-content'); // Làm mờ nội dung chỉ dành cho admin
+                }
+            }
+        } else {
+            // Hiển thị modal đăng nhập khi người dùng chưa đăng nhập
+            $('#loginModal').modal('show');
+        }
+
+        checkAccess(); // Kiểm tra quyền truy cập sau khi menu được tải
+    });
+}
+
+$(document).ready(function() {
+    // Ẩn tất cả nội dung khi trang tải xong
+    $('.protected-content').addClass('hidden-content');
+
+    // Tải danh sách tài khoản và xử lý đăng nhập
+    loadAccounts();
+
+    // Xử lý sự kiện khi click Đăng nhập hoặc Đăng xuất
+    $('#loginButton').click(function() {
+        var buttonText = $(this).text();
+
+        if (buttonText === 'Đăng nhập') {
+            $('#loginModal').modal('show');
+        } else if (buttonText === 'Đăng xuất') {
+            $('#navbarTitle').text('Giải pháp công nghệ số');
+            $('#loginButton').text('Đăng nhập');
+            $('#userInfo').hide();
+            localStorage.removeItem('loggedInUser');
+            toastr.success('Bạn đã đăng xuất thành công!', 'Đăng xuất'); // Thông báo bằng Toastr
+            closeMenu(); // Đóng menu khi đăng xuất
+            checkAccess(); // Ẩn tất cả nội dung khi đăng xuất
+        }
+    });
+
+    // Xử lý sự kiện khi click Đăng nhập trong modal
+    $('#loginSubmitButton').click(function() {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        var accounts = JSON.parse(localStorage.getItem('accounts'));
+
+        var loggedInUser = accounts.find(function(account) {
+            return account.username === username && account.password === password;
+        });
+
+        if (loggedInUser) {
+            $('#navbarTitle').text('Xin chào, ' + username);
+            $('#loginButton').text('Đăng xuất');
+            $('#loginModal').modal('hide');
+            localStorage.setItem('loggedInUser', username);
+
+            if (loggedInUser.role === 'admin') {
+                closeMenu(); // Đóng menu khi đăng nhập admin
+                $('.admin-content').removeClass('blur-content'); // Hiển thị nội dung cho admin
+            } else {
+                closeMenu(); // Đóng menu khi đăng nhập user
+                $('.admin-content').addClass('blur-content'); // Làm mờ nội dung chỉ dành cho admin
+            }
+
+            checkAccess(); // Kiểm tra quyền truy cập sau khi đăng nhập
+        } else {
+            toastr.error('Tên đăng nhập hoặc mật khẩu không chính xác!', 'Lỗi'); // Thông báo bằng Toastr
+        }
+    });
+});
+
+
+</script>

@@ -1,43 +1,7 @@
 <!-- CÁC MODAL THÔNG BÁO KHI GỬI DỮ LIỆU -->
 
-<!-- Modal Thành công -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="successModalLabel">Thông báo</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        </div>
-        <div class="modal-body">
-          Ghi nhận thành công !
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">Đóng</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-<!-- Modal Lỗi -->
-<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="errorModal">Thông báo</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        </div>
-        <div class="modal-body">
-          Ghi nhận thất bại !
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
 <!-- Modal Loading khi đang gửi dữ liệu-->
-<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" style="display: none;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body text-center">
@@ -49,54 +13,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal Menu Đăng nhập -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Đăng nhập</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="loginFormElement">
-                        <div class="form-group">
-                            <label for="username">Tên đăng nhập:</label>
-                            <input type="text" class="form-control" id="username" name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Mật khẩu:</label>
-                            <input type="password" class="form-control" id="password" name="password">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" id="loginSubmitButton">Đăng nhập</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-<!-- Modal Đăng Xuất Thành Công -->
-<div class="modal fade" id="logoutSuccessModal" tabindex="-1" aria-labelledby="logoutSuccessModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="logoutSuccessModalLabel">Thông báo</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        </div>
-        <div class="modal-body">
-          Đăng xuất thành công!
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 <!-- Modal để xác nhận mật khẩu Xóa dữ liệu -->
 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
