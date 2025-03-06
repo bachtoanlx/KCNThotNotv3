@@ -10,7 +10,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url(''); /* Đường dẫn đến hình ảnh */
+    background-image: url('https://static1.cafeland.vn/cafelandData/upload/tintuc/thitruong/2024/03/tuan-04/nhung-rao-can-ngang-duong-bat-dong-san-khu-cong-nghiep-1711664395.jpg'); /* Đường dẫn đến hình ảnh */
     background-size: cover;
     background-position: center;
     filter: blur(3px); /* Làm mờ hình nền */
