@@ -117,3 +117,154 @@ try {
 
 }
 
+
+
+
+
+ 
+// Xử lý hành động gửi dữ liệu vào GG Sheet2 (Thông báo nghỉ)
+async function submitForm_2() {
+    var loggedInUser = localStorage.getItem('loggedInUser');
+    if (!loggedInUser) {
+        $('#loginModal').modal('show');
+        return;
+    }
+
+    var c_ty = document.getElementById('c_ty').value;
+    var ngay_nghi = document.getElementById('ngay_nghi').value || getCurrentDate();
+    var ghi_chu = document.getElementById('ghi_chu').value;
+
+    if (!c_ty || !ngay_nghi) {
+        Swal.fire('Lỗi', 'Bạn chưa điền đủ thông tin bắt buộc!', 'error');
+        return;
+    }
+
+    const elInput = document.getElementById("file");
+    const file = elInput.files[0];
+    let fileData = null;
+
+    if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+            Swal.fire('Lỗi', 'File quá lớn. Vui lòng chọn file nhỏ hơn 5MB.', 'error');
+            return;
+        }
+        try {
+            const reader = new FileReader();
+            fileData = await new Promise((resolve, reject) => {
+                reader.onload = () => resolve(reader.result.split(",")[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        } catch (error) {
+            Swal.fire('Lỗi', 'Xảy ra lỗi khi đọc file', 'error');
+            return;
+        }
+    } else {
+        const confirmNoFile = await Swal.fire({
+            title: "Không có file đính kèm?",
+            text: "Bạn có muốn tiếp tục gửi không?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Tiếp tục",
+            cancelButtonText: "Hủy"
+        });
+        if (!confirmNoFile.isConfirmed) return;
+    }
+
+    var datesArray = ngay_nghi.split(',');
+    var batchSize = 3; // Số ngày gửi mỗi nhóm
+    var successCount = 0, errorCount = 0;
+
+    Swal.fire({
+        title: 'Đang gửi dữ liệu...',
+        html: 'Vui lòng chờ trong giây lát',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    for (let i = 0; i < datesArray.length; i += batchSize) {
+        let batch = datesArray.slice(i, i + batchSize);
+        await Promise.all(batch.map(date => {
+            let fileType = file?.type.split('/')[1] || file?.name.split('.').pop();
+            if (!fileType) {
+                fileType = "unknown";
+            }
+            if (!date.trim()) {
+                console.error("date is empty");
+                return;
+            }
+            if (!c_ty) {
+                console.error("c_ty is empty");
+                return;
+            }
+
+            let fileName = `${c_ty}-${date.trim()}.${fileType}`;
+            return sendDataWithRetry(date.trim(), loggedInUser, c_ty, ghi_chu, fileData, fileName, file?.type);
+        }))
+        .then(results => {
+            results.forEach(result => {
+                if (result && result.success) successCount++;
+                else if (result) errorCount++;
+            });
+        });
+        await new Promise(resolve => setTimeout(resolve, 500)); // Nghỉ 500ms giữa các batch
+    }
+
+    Swal.close();
+
+    if (successCount === datesArray.length) {
+        Swal.fire('Thành công!', `${successCount} ngày đã được gửi!`, 'success').then(() => {
+            window.location.reload();
+        });
+    } else if (successCount > 0) {
+        Swal.fire('Chú ý', `${successCount} ngày gửi thành công, ${errorCount} ngày bị lỗi.`, 'warning');
+    } else {
+        Swal.fire('Lỗi', 'Tất cả yêu cầu gửi đều thất bại, vui lòng thử lại!', 'error');
+    }
+}
+
+async function sendDataWithRetry(date, user, c_ty, ghi_chu, fileData, fileName, fileType, retries = 2) {
+    var formData = {
+        sheetName: 'Sheet2',
+        user: user,
+        c_ty: c_ty,
+        ngay_nghi: date,
+        ghi_chu: ghi_chu,
+        fileData: fileData,
+        name: fileName,
+        type: fileType
+    };
+
+    for (let attempt = 1; attempt <= retries + 1; attempt++) {
+        try {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            });
+            const data = await response.json();
+            if (data.result === 'success') {
+                return { success: true };
+            } else {
+                console.error(`Thử lần ${attempt} thất bại:`, data);
+            }
+        } catch (error) {
+            console.error(`Thử lần ${attempt} lỗi:`, error);
+        }
+
+        if (attempt <= retries) await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    return { success: false };
+}
+
+
+
+
+
+
+
+
+
+
+
