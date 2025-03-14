@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchSheetData() {
         gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: '1SvIgfQfruhsLAQxTj3a3bN5KFx1s1todjYwa7EPusiQ',
-            range: 'Sheet2!A1:F'
+            range: 'Sheet2!A1:G'
         }).then(function(response) {
             var values = response.result.values;
             if (values && values.length > 0) {
@@ -137,12 +137,37 @@ document.addEventListener('DOMContentLoaded', function() {
         rows.forEach(function(row) {
             var tr = document.createElement('tr');
             row.forEach(function(cellValue, index) {
-                if (!columnsToHide.includes(index)) {
-                    var td = document.createElement('td');
-                    td.textContent = cellValue;
-                    tr.appendChild(td);
-                }
-            });
+    if (!columnsToHide.includes(index)) {
+        var td = document.createElement('td');
+
+        // Kiểm tra nếu cột này là cột H (index = 6)
+        if (index === 6) { 
+    if (cellValue && cellValue.startsWith("http")) { 
+        var a = document.createElement('a');
+        a.href = cellValue;  
+        a.textContent = "Mở link";  
+        a.target = "_blank";  
+        a.style.color = "blue";  // Link màu xanh
+        td.appendChild(a);
+    } else {
+        td.innerHTML = `<span style="color:red; font-weight:bold;">No link</span>`;  
+    }
+
+        } else {
+            td.textContent = cellValue;
+        }
+
+        tr.appendChild(td);
+    }
+});
+            //nếu hàng ko có lik thì thêm &nbsp để giữ bố cục
+            while (tr.children.length < headerRowElement.children.length - 2) { 
+                var emptyTd = document.createElement('td');
+                emptyTd.innerHTML = "&nbsp;";
+                tr.appendChild(emptyTd);
+            }
+
+
             // Lấy ID từ cột đầu tiên của mỗi hàng
             var id = row[0];
             // Tạo nút chỉnh sửa

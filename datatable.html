@@ -31,7 +31,7 @@
         <div class="container mt-3 mb-3"> <!-- Container Bootstrap -->  
             <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
                 <div class="col-md-12"> <!-- Cột Bootstrap: chiều rộng 100% trên màn hình lớn -->
-                    
+                      
                     <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->   
                         <div class="card-body"> 
                             <h5 class="mb-3">Google Sheets Data QLCT 2024</h5>
@@ -65,7 +65,8 @@
                                   <option value="all">Tất cả</option>
                                 </select>
                             </div>
-                    
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function fetchSheetData() {
         gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: '1SvIgfQfruhsLAQxTj3a3bN5KFx1s1todjYwa7EPusiQ',
-            range: 'Sheet1!A1:G'
+            range: 'Sheet1!A1:H'
         }).then(function(response) {
             var values = response.result.values;
             if (values && values.length > 0) {
@@ -147,10 +148,27 @@ document.addEventListener('DOMContentLoaded', function() {
             row.forEach(function(cellValue, index) {
                 if (!columnsToHide.includes(index)) {
                     var td = document.createElement('td');
-                    td.textContent = cellValue;
+                    // Kiểm tra nếu cột này là cột H (index = 7)
+                     if (index === 7) { 
+                    var a = document.createElement('a');
+                    a.href = cellValue;  // Link từ Google Sheets
+                    a.textContent = "Mở link";  // Văn bản hiển thị
+                    a.target = "_blank";  // Mở tab mới khi nhấn
+                    td.appendChild(a);
+                } else {
+                     td.textContent = cellValue;
+                }
+
                     tr.appendChild(td);
                 }
+                
             });
+            //nếu hàng ko có lik thì thêm &nbsp để giữ bố cục
+            while (tr.children.length < headerRowElement.children.length - 2) { 
+                var emptyTd = document.createElement('td');
+                emptyTd.innerHTML = "&nbsp;";
+                tr.appendChild(emptyTd);
+            }
             // Lấy ID từ cột đầu tiên của mỗi hàng
             var id = row[0];
             // Tạo nút chỉnh sửa

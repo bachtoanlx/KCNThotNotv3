@@ -10,7 +10,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://static1.cafeland.vn/cafelandData/upload/tintuc/thitruong/2024/03/tuan-04/nhung-rao-can-ngang-duong-bat-dong-san-khu-cong-nghiep-1711664395.jpg'); /* Đường dẫn đến hình ảnh */
+    background-image: url(''); /* Đường dẫn đến hình ảnh */
     background-size: cover;
     background-position: center;
     filter: blur(3px); /* Làm mờ hình nền */
@@ -75,12 +75,12 @@ width: 5%;
 
 th:nth-child(3),
 td:nth-child(3) {
-width: 20%;
+width: 15%;
 }
 
 th:nth-child(4),
 td:nth-child(4) {
-width: 15%;
+width: 10%;
 }
 
 th:nth-child(5),
@@ -90,16 +90,21 @@ width: 15%;
 
 th:nth-child(6),
 td:nth-child(6) {
-width: 30%;
+width: 35%;
 }
 
 th:nth-child(7),
 td:nth-child(7) {
-width: 5%;
+width: 10%;
 }
 
 th:nth-child(8),
 td:nth-child(8) {
+width: 5%;
+}
+
+th:nth-child(9),
+td:nth-child(9) {
 width: 5%;
 }
 /* Ẩn các ô dữ liệu có class 'hidden-column' */
@@ -114,10 +119,18 @@ margin-top: 10px; /* Điều chỉnh khoảng cách phía trên của nút */
 
 /* Định dạng bảng để hiển thị tốt trên thiết bị di động */
 @media (max-width: 576px) {
-table, td {
-font-size: 14px; /* Giảm kích thước font chữ trên thiết bị nhỏ */
-}
-} 
+    /* Ẩn các cột không cần thiết trên màn hình nhỏ */
+    th:nth-child(1), td:nth-child(1),  /* Cột thứ 2 */
+    th:nth-child(2), td:nth-child(2),  /* Cột thứ 4 */
+    th:nth-child(6), td:nth-child(6) { /* Cột thứ 8 */
+        display: none;
+    }
+/* Giảm kích thước font chữ cho bảng */
+        table, td {
+            font-size: 15px; 
+        }
+    }
+    
 /* Định dạng bảng để hiển thị tốt trên màn hình lớn hơn */
 @media (min-width: 992px) {
 table, td {
@@ -198,12 +211,12 @@ table, td {
     margin-top: 10px; /* Điều chỉnh khoảng cách phía trên của nút */
     }
     
-    /* Định dạng bảng để hiển thị tốt trên thiết bị di động */
-    @media (max-width: 576px) {
+/* Định dạng bảng để hiển thị tốt trên thiết bị di động */
+@media (max-width: 576px) {
     table, td {
     font-size: 14px; /* Giảm kích thước font chữ trên thiết bị nhỏ */
     }
-    } 
+    }
     /* Định dạng bảng để hiển thị tốt trên màn hình lớn hơn */
     @media (min-width: 992px) {
     table, td {
@@ -294,12 +307,18 @@ table, td {
     margin-top: 10px; /* Điều chỉnh khoảng cách phía trên của nút */
     }
     
-    /* Định dạng bảng để hiển thị tốt trên thiết bị di động */
-    @media (max-width: 576px) {
-    table, td {
-    font-size: 14px; /* Giảm kích thước font chữ trên thiết bị nhỏ */
+/* Định dạng bảng để hiển thị tốt trên thiết bị di động */
+@media (max-width: 576px) {
+    /* Ẩn các cột không cần thiết trên màn hình nhỏ */
+    th:nth-child(1), td:nth-child(1),  /* Cột thứ 1 */
+    th:nth-child(2), td:nth-child(2) {  /* Cột thứ 2 */
+        display: none;
     }
-    } 
+/* Giảm kích thước font chữ cho bảng */
+        table, td {
+            font-size: 15px; 
+        }
+    }
     /* Định dạng bảng để hiển thị tốt trên màn hình lớn hơn */
     @media (min-width: 992px) {
     table, td {
