@@ -184,67 +184,72 @@ function closeMenu() {
 
 
 
-// 📌 1. Ẩn nội dung ngay khi trang tải lên (giữ UI ổn định)
-function initializePage() {
-    $('.protected-content').addClass('hidden-content');
-    $('.admin-content').addClass('blur-content');
-    
-    var savedUser = localStorage.getItem('loggedInUser');
-    var savedRole = localStorage.getItem('loggedInRole');
-    
-
-    // ✅ Nếu đã đăng nhập trước đó, hiển thị lời chào ngay lập tức
-    if (savedUser && savedRole) {
-        updateUIForLoggedInUser(savedUser, savedRole);
-    } else {
-        $('#loginModal').modal('show'); // ✅ Hiển thị modal nếu chưa đăng nhập
+// 📌 1. Đọc dữ liệu từ localStorage một cách an toàn
+function getSavedUser() {
+    try {
+        return {
+            username: localStorage.getItem('loggedInUser'),
+            role: localStorage.getItem('loggedInRole')
+        };
+    } catch (error) {
+        console.warn("⚠ Không thể lấy dữ liệu từ localStorage, thử lại...");
+        return null;
     }
 }
 
-// 📌 2. Cập nhật UI khi user đăng nhập
-function updateUIForLoggedInUser(username, role) {
-    $('#loginModal').modal('hide');
-    $('#navbarTitle').text('Xin chào, ' + username);
-    $('#loginButton').text('Đăng xuất');
-    $('#loginModal').modal('hide'); // ✅ Đảm bảo modal bị ẩn nếu đã đăng nhập
-    showProtectedContent(role); // Hiển thị nội dung theo quyền
+// 📌 2. Ẩn nội dung ngay khi trang tải lên nhưng không cập nhật UI vội
+function initializePage(retry = false) {
+    $('.protected-content').addClass('hidden-content');
+    $('.admin-content').addClass('blur-content');
+
+    var savedData = getSavedUser();
+
+    if (savedData && savedData.username && savedData.role) {
+        console.log("✅ User từ localStorage:", savedData.username);
+        updateUIForLoggedInUser(savedData.username, savedData.role);
+    } else if (!retry) {
+        setTimeout(() => initializePage(true), 1000); // 🔄 Nếu chưa có dữ liệu, thử lại sau 1 giây
+    } else {
+        console.warn("❌ Không có dữ liệu đăng nhập, hiển thị modal");
+        $('#loginModal').modal('show');
+    }
 }
 
-// 📌 3. Cập nhật UI khi user đăng xuất
+// 📌 3. Cập nhật UI khi user đăng nhập
+function updateUIForLoggedInUser(username, role) {
+    if ($('#navbarTitle').text() !== `Xin chào, ${username}`) { // 🚀 Chỉ cập nhật nếu khác
+        $('#navbarTitle').text('Xin chào, ' + username);
+        $('#loginButton').text('Đăng xuất');
+    }
+    $('#loginModal').modal('hide'); // ✅ Ẩn modal khi đăng nhập
+    showProtectedContent(role);
+}
+
+// 📌 4. Cập nhật UI khi user đăng xuất
 function updateUIForLoggedOutUser() {
-    $('#navbarTitle').text('Giải pháp công nghệ số'); // ✅ Không cập nhật nếu trang đang tải
+    $('#navbarTitle').text('Giải pháp công nghệ số');
     $('#loginButton').text('Đăng nhập');
     hideProtectedContent();
     $('#loginModal').modal('show'); // ✅ Hiển thị modal khi đăng xuất
 }
 
-// 📌 4. Kiểm tra đăng nhập từ `localStorage` hoặc GAS (chỉ sau 30 phút)
+// 📌 5. Kiểm tra tài khoản với GAS nhưng CHỈ khi tải trang
 function checkLoginStatus(username) {
-    const lastCheck = localStorage.getItem('lastLoginCheck');
-    const now = Date.now();
-    const thirtyMinutes = 30 * 60 * 1000; // 30 phút
-
-    if (lastCheck && (now - parseInt(lastCheck) < thirtyMinutes)) {
-        console.log("⏳ Đã kiểm tra gần đây, không gọi API GAS.");
-        return;
-    }
-
-    console.log("🔍 Kiểm tra đăng nhập với GAS...");
+    console.log("🔍 Gửi yêu cầu xác minh tài khoản lên GAS...");
     var url = `https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec?username=${username}`;
 
     $.getJSON(url, function(response) {
-        if (response.success) {
-            localStorage.setItem('lastLoginCheck', now);
-            localStorage.setItem('loggedInRole', response.role);
+        if (!response.success) {
+            logoutUser(); // ❌ Nếu tài khoản không hợp lệ, buộc đăng xuất
         } else {
-            logoutUser();
+            localStorage.setItem('loggedInRole', response.role);
         }
     }).fail(function() {
-        console.warn("Không thể kiểm tra tài khoản, có thể do lỗi mạng.");
+        console.warn("⚠ Không thể kiểm tra tài khoản, có thể do lỗi mạng.");
     });
 }
 
-// 📌 5. Xử lý đăng nhập khi người dùng nhập thông tin
+// 📌 6. Xử lý đăng nhập khi người dùng nhập thông tin
 $('#loginSubmitButton').click(function() {
     $('#loginModal').modal('hide');
     $('#loaderModal').modal('show');
@@ -255,7 +260,6 @@ $('#loginSubmitButton').click(function() {
     $.getJSON(url, { username: username, password: password }, function(response) {
         if (response.success) {
             localStorage.setItem("loggedInUser", username);
-            localStorage.setItem("lastLoginCheck", Date.now());
             localStorage.setItem("loggedInRole", response.role);
             
             updateUIForLoggedInUser(username, response.role);
@@ -270,7 +274,7 @@ $('#loginSubmitButton').click(function() {
     });
 });
 
-// 📌 6. Xử lý đăng xuất khi người dùng nhấn nút
+// 📌 7. Xử lý đăng xuất khi người dùng nhấn nút
 $('#loginButton').click(function() {
     if ($(this).text() === "Đăng xuất") {
         logoutUser();
@@ -279,24 +283,22 @@ $('#loginButton').click(function() {
     }
 });
 
-// 📌 7. Đăng xuất và cập nhật UI ngay lập tức
+// 📌 8. Đăng xuất và cập nhật UI ngay lập tức
 function logoutUser() {
     localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("lastLoginCheck");
     localStorage.removeItem("loggedInRole");
 
     updateUIForLoggedOutUser();
     toastr.success("Bạn đã đăng xuất thành công!", "Đăng xuất");
- 
 }
 
-// 📌 8. Ẩn nội dung bảo vệ khi đăng xuất
+// 📌 9. Ẩn nội dung bảo vệ khi đăng xuất
 function hideProtectedContent() {
     $('.protected-content').addClass('hidden-content');
     $('.admin-content').addClass('blur-content');
 }
 
-// 📌 9. Hiển thị nội dung bảo vệ theo quyền
+// 📌 10. Hiển thị nội dung bảo vệ theo quyền
 function showProtectedContent(role) {
     $('.protected-content').removeClass('hidden-content');
 
@@ -307,17 +309,14 @@ function showProtectedContent(role) {
     }
 }
 
-// 📌 10. Khi trang tải lên, kiểm tra trạng thái đăng nhập
+// 📌 11. Khi trang tải lên, đảm bảo kiểm tra tài khoản đúng cách
 $(document).ready(function() {
     initializePage();
     var savedUser = localStorage.getItem('loggedInUser');
     if (savedUser) {
-        checkLoginStatus(savedUser);
+        setTimeout(() => checkLoginStatus(savedUser), 6000); // 🚀 Kiểm tra GAS sau 06 giây để tránh chậm UI
     }
 });
-
-
-
 
 
 </script>
