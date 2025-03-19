@@ -1,0 +1,337 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://bcp.cdnchinhphu.vn/334894974524682240/2024/12/21/kcn-1734796733258623713500.jpg'); /* Đường dẫn đến hình ảnh */
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px); /* Làm mờ hình nền */
+    z-index: -1; /* Đặt lớp hình nền phía sau nội dung */
+}
+
+.content {
+    position: relative;
+    z-index: 1; /* Đảm bảo nội dung nằm trên hình nền */
+    color: black;
+    padding: 20px;
+    text-align: center;
+}
+
+
+#table {
+/* Thêm CSS tùy chỉnh tại đây nếu cần */
+body {
+min-height: 100vh; /* Đảm bảo chiều cao của body ít nhất là 100% chiều cao của viewport */
+margin: 0;
+padding: 0;
+background-color: #f8f9fa; /* Màu nền của trang */
+display: flex;
+justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+align-items: center; /* Căn giữa nội dung theo chiều dọc */
+}
+
+/* Định dạng cho bảng dữ liệu */
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+td {
+border: 1px solid #ddd;
+padding: 8px;
+text-align: center; /* Căn giữa ngang nội dung trong ô */
+vertical-align: middle;
+line-height: 1.2; /* Thay đổi giá trị line-height tùy vào kích thước của ô */
+}
+
+
+th {
+text-align: center; /* Căn giữa ngang tiêu đề */
+vertical-align: middle; /* Căn giữa dọc tiêu đề */
+line-height: 1.2; /* Thay đổi giá trị line-height tùy vào kích thước của ô */
+height: 20px; /* Đặt chiều cao cho ô để căn giữa nội dung dọc */
+background-color: #3498db;
+color: white;
+}
+
+/* Điều chỉnh độ rộng của từng cột */
+th:nth-child(1),
+td:nth-child(1) {
+width: 5%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+width: 5%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+width: 15%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+width: 10%;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+width: 15%;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+width: 35%;
+}
+
+th:nth-child(7),
+td:nth-child(7) {
+width: 10%;
+}
+
+th:nth-child(8),
+td:nth-child(8) {
+width: 5%;
+}
+
+th:nth-child(9),
+td:nth-child(9) {
+width: 5%;
+}
+/* Ẩn các ô dữ liệu có class 'hidden-column' */
+.hidden-column {
+display: none;
+}
+
+/* Điều chỉnh khoảng cách phía trên của nút "Thu gọn" */
+#showAllButton {
+margin-top: 10px; /* Điều chỉnh khoảng cách phía trên của nút */
+}
+
+/* Định dạng bảng để hiển thị tốt trên thiết bị di động */
+@media (max-width: 576px) {
+    /* Ẩn các cột không cần thiết trên màn hình nhỏ */
+    th:nth-child(1), td:nth-child(1),  /* Cột thứ 2 */
+    th:nth-child(2), td:nth-child(2),  /* Cột thứ 4 */
+    th:nth-child(6), td:nth-child(6) { /* Cột thứ 8 */
+        display: none;
+    }
+/* Giảm kích thước font chữ cho bảng */
+        table, td {
+            font-size: 15px; 
+        }
+    }
+    
+/* Định dạng bảng để hiển thị tốt trên màn hình lớn hơn */
+@media (min-width: 992px) {
+table, td {
+    font-size: 17px; /* Tăng kích thước font chữ trên màn hình lớn */
+}
+}    
+} 
+
+#table_2 {
+    /* Thêm CSS tùy chỉnh tại đây nếu cần */
+    body {
+    min-height: 100vh; /* Đảm bảo chiều cao của body ít nhất là 100% chiều cao của viewport */
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Màu nền của trang */
+    display: flex;
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    }
+    
+    /* Định dạng cho bảng dữ liệu */
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    }
+    
+    td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center; /* Căn giữa ngang nội dung trong ô */
+    vertical-align: middle;
+    line-height: 1.2; /* Thay đổi giá trị line-height tùy vào kích thước của ô */
+    }
+    
+    
+    th {
+    text-align: center; /* Căn giữa ngang tiêu đề */
+    vertical-align: middle; /* Căn giữa dọc tiêu đề */
+    line-height: 1.2; /* Thay đổi giá trị line-height tùy vào kích thước của ô */
+    height: 20px; /* Đặt chiều cao cho ô để căn giữa nội dung dọc */
+    background-color: #3498db;
+    color: white;
+    }
+    
+    /* Điều chỉnh độ rộng của từng cột */
+    th:nth-child(1),
+    td:nth-child(1) {
+    width: 25%;
+    }
+    
+    th:nth-child(2),
+    td:nth-child(2) {
+    width: 15%;
+    }
+    
+    th:nth-child(3),
+    td:nth-child(3) {
+    width: 15%;
+    }
+    
+    th:nth-child(4),
+    td:nth-child(4) {
+    width: 15%;
+    }
+    
+    th:nth-child(5),
+    td:nth-child(5) {
+    width: 15%;
+    }
+    
+    /* Ẩn các ô dữ liệu có class 'hidden-column' */
+    .hidden-column {
+    display: none;
+    }
+    
+    /* Điều chỉnh khoảng cách phía trên của nút "Thu gọn" */
+    #showAllButton {
+    margin-top: 10px; /* Điều chỉnh khoảng cách phía trên của nút */
+    }
+    
+/* Định dạng bảng để hiển thị tốt trên thiết bị di động */
+@media (max-width: 576px) {
+    table, td {
+    font-size: 14px; /* Giảm kích thước font chữ trên thiết bị nhỏ */
+    }
+    }
+    /* Định dạng bảng để hiển thị tốt trên màn hình lớn hơn */
+    @media (min-width: 992px) {
+    table, td {
+        font-size: 17px; /* Tăng kích thước font chữ trên màn hình lớn */
+    }
+    }    
+} 
+#table_3 {
+    /* Thêm CSS tùy chỉnh tại đây nếu cần */
+    body {
+    min-height: 100vh; /* Đảm bảo chiều cao của body ít nhất là 100% chiều cao của viewport */
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Màu nền của trang */
+    display: flex;
+    justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    }
+    
+    /* Định dạng cho bảng dữ liệu */
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    }
+    
+    td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center; /* Căn giữa ngang nội dung trong ô */
+    vertical-align: middle;
+    line-height: 1.2; /* Thay đổi giá trị line-height tùy vào kích thước của ô */
+    }
+    
+    
+    th {
+    text-align: center; /* Căn giữa ngang tiêu đề */
+    vertical-align: middle; /* Căn giữa dọc tiêu đề */
+    line-height: 1.2; /* Thay đổi giá trị line-height tùy vào kích thước của ô */
+    height: 20px; /* Đặt chiều cao cho ô để căn giữa nội dung dọc */
+    background-color: #3498db;
+    color: white;
+    }
+    
+    /* Điều chỉnh độ rộng của từng cột */
+    th:nth-child(1),
+    td:nth-child(1) {
+    width: 5%;
+    }
+    
+    th:nth-child(2),
+    td:nth-child(2) {
+    width: 5%;
+    }
+    
+    th:nth-child(3),
+    td:nth-child(3) {
+    width: 20%;
+    }
+    
+    th:nth-child(4),
+    td:nth-child(4) {
+    width: 20%;
+    }
+    
+    th:nth-child(5),
+    td:nth-child(5) {
+    width: 35%;
+    }
+    
+
+    
+    th:nth-child(6),
+    td:nth-child(6) {
+    width: 10%;
+    }
+    
+    th:nth-child(7),
+    td:nth-child(7) {
+    width: 5%;
+    }
+
+    th:nth-child(8),
+    td:nth-child(8) {
+    width: 5%;
+    }
+    /* Ẩn các ô dữ liệu có class 'hidden-column' */
+    .hidden-column {
+    display: none;
+    }
+    
+    /* Điều chỉnh khoảng cách phía trên của nút "Thu gọn" */
+    #showAllButton {
+    margin-top: 10px; /* Điều chỉnh khoảng cách phía trên của nút */
+    }
+    
+/* Định dạng bảng để hiển thị tốt trên thiết bị di động */
+@media (max-width: 576px) {
+    /* Ẩn các cột không cần thiết trên màn hình nhỏ */
+    th:nth-child(1), td:nth-child(1),  /* Cột thứ 1 */
+    th:nth-child(2), td:nth-child(2) {  /* Cột thứ 2 */
+        display: none;
+    }
+/* Giảm kích thước font chữ cho bảng */
+        table, td {
+            font-size: 15px; 
+        }
+    }
+    /* Định dạng bảng để hiển thị tốt trên màn hình lớn hơn */
+    @media (min-width: 992px) {
+    table, td {
+        font-size: 17px; /* Tăng kích thước font chữ trên màn hình lớn */
+    }
+    }    
+} 
+
+
+
+  
