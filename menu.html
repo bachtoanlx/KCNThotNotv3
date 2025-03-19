@@ -182,106 +182,142 @@ function closeMenu() {
     }
 }
 
-// Hàm kiểm tra quyền truy cập và áp dụng lớp bảo vệ
-function checkAccess() {
-    const userHasAccess = localStorage.getItem('loggedInUser') !== null; // Thay đổi điều kiện nếu cần
-    const protectedContent = document.querySelectorAll('.protected-content');
-    if (userHasAccess) {
-        protectedContent.forEach(element => {
-            element.classList.remove('hidden-content');
-        });
+
+
+// 📌 1. Ẩn nội dung ngay khi trang tải lên (giữ UI ổn định)
+function initializePage() {
+    $('.protected-content').addClass('hidden-content');
+    $('.admin-content').addClass('blur-content');
+    
+    var savedUser = localStorage.getItem('loggedInUser');
+    var savedRole = localStorage.getItem('loggedInRole');
+    
+
+    // ✅ Nếu đã đăng nhập trước đó, hiển thị lời chào ngay lập tức
+    if (savedUser && savedRole) {
+        updateUIForLoggedInUser(savedUser, savedRole);
     } else {
-        protectedContent.forEach(element => {
-            element.classList.add('hidden-content');
-        });
+        $('#loginModal').modal('show'); // ✅ Hiển thị modal nếu chưa đăng nhập
     }
 }
 
-// Đọc dữ liệu từ tệp JSON và xử lý đăng nhập
-function loadAccounts() {
-    $.getJSON('accounts.json', function(data) {
-        // Lưu danh sách tài khoản vào localStorage
-        localStorage.setItem('accounts', JSON.stringify(data.accounts));
+// 📌 2. Cập nhật UI khi user đăng nhập
+function updateUIForLoggedInUser(username, role) {
+    $('#loginModal').modal('hide');
+    $('#navbarTitle').text('Xin chào, ' + username);
+    $('#loginButton').text('Đăng xuất');
+    $('#loginModal').modal('hide'); // ✅ Đảm bảo modal bị ẩn nếu đã đăng nhập
+    showProtectedContent(role); // Hiển thị nội dung theo quyền
+}
 
-        // Kiểm tra nếu đã đăng nhập trước đó
-        var savedUser = localStorage.getItem('loggedInUser');
-        if (savedUser) {
-            var accounts = JSON.parse(localStorage.getItem('accounts'));
-            var user = accounts.find(account => account.username === savedUser);
+// 📌 3. Cập nhật UI khi user đăng xuất
+function updateUIForLoggedOutUser() {
+    $('#navbarTitle').text('Giải pháp công nghệ số'); // ✅ Không cập nhật nếu trang đang tải
+    $('#loginButton').text('Đăng nhập');
+    hideProtectedContent();
+    $('#loginModal').modal('show'); // ✅ Hiển thị modal khi đăng xuất
+}
 
-            if (user) {
-                $('#navbarTitle').text('Xin chào, ' + savedUser);
-                $('#loginButton').text('Đăng xuất');
+// 📌 4. Kiểm tra đăng nhập từ `localStorage` hoặc GAS (chỉ sau 30 phút)
+function checkLoginStatus(username) {
+    const lastCheck = localStorage.getItem('lastLoginCheck');
+    const now = Date.now();
+    const thirtyMinutes = 30 * 60 * 1000; // 30 phút
 
-                if (user.role === 'admin') {
-                    $('.admin-content').removeClass('blur-content'); // Hiển thị nội dung cho admin
-                } else {
-                    $('.admin-content').addClass('blur-content'); // Làm mờ nội dung chỉ dành cho admin
-                }
-            }
+    if (lastCheck && (now - parseInt(lastCheck) < thirtyMinutes)) {
+        console.log("⏳ Đã kiểm tra gần đây, không gọi API GAS.");
+        return;
+    }
+
+    console.log("🔍 Kiểm tra đăng nhập với GAS...");
+    var url = `https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec?username=${username}`;
+
+    $.getJSON(url, function(response) {
+        if (response.success) {
+            localStorage.setItem('lastLoginCheck', now);
+            localStorage.setItem('loggedInRole', response.role);
         } else {
-            // Hiển thị modal đăng nhập khi người dùng chưa đăng nhập
-            $('#loginModal').modal('show');
+            logoutUser();
         }
-
-        checkAccess(); // Kiểm tra quyền truy cập sau khi menu được tải
+    }).fail(function() {
+        console.warn("Không thể kiểm tra tài khoản, có thể do lỗi mạng.");
     });
 }
 
-$(document).ready(function() {
-    // Ẩn tất cả nội dung khi trang tải xong
-    $('.protected-content').addClass('hidden-content');
+// 📌 5. Xử lý đăng nhập khi người dùng nhập thông tin
+$('#loginSubmitButton').click(function() {
+    $('#loginModal').modal('hide');
+    $('#loaderModal').modal('show');
+    var username = $('#username').val();
+    var password = $('#password').val();
+    var url = "https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec";
 
-    // Tải danh sách tài khoản và xử lý đăng nhập
-    loadAccounts();
-
-    // Xử lý sự kiện khi click Đăng nhập hoặc Đăng xuất
-    $('#loginButton').click(function() {
-        var buttonText = $(this).text();
-
-        if (buttonText === 'Đăng nhập') {
-            $('#loginModal').modal('show');
-        } else if (buttonText === 'Đăng xuất') {
-            $('#navbarTitle').text('Giải pháp công nghệ số');
-            $('#loginButton').text('Đăng nhập');
-            $('#userInfo').hide();
-            localStorage.removeItem('loggedInUser');
-            toastr.success('Bạn đã đăng xuất thành công!', 'Đăng xuất'); // Thông báo bằng Toastr
-            closeMenu(); // Đóng menu khi đăng xuất
-            checkAccess(); // Ẩn tất cả nội dung khi đăng xuất
-        }
-    });
-
-    // Xử lý sự kiện khi click Đăng nhập trong modal
-    $('#loginSubmitButton').click(function() {
-        var username = $('#username').val();
-        var password = $('#password').val();
-        var accounts = JSON.parse(localStorage.getItem('accounts'));
-
-        var loggedInUser = accounts.find(function(account) {
-            return account.username === username && account.password === password;
-        });
-
-        if (loggedInUser) {
-            $('#navbarTitle').text('Xin chào, ' + username);
-            $('#loginButton').text('Đăng xuất');
-            $('#loginModal').modal('hide');
-            localStorage.setItem('loggedInUser', username);
-
-            if (loggedInUser.role === 'admin') {
-                closeMenu(); // Đóng menu khi đăng nhập admin
-                $('.admin-content').removeClass('blur-content'); // Hiển thị nội dung cho admin
-            } else {
-                closeMenu(); // Đóng menu khi đăng nhập user
-                $('.admin-content').addClass('blur-content'); // Làm mờ nội dung chỉ dành cho admin
-            }
-
-            checkAccess(); // Kiểm tra quyền truy cập sau khi đăng nhập
+    $.getJSON(url, { username: username, password: password }, function(response) {
+        if (response.success) {
+            localStorage.setItem("loggedInUser", username);
+            localStorage.setItem("lastLoginCheck", Date.now());
+            localStorage.setItem("loggedInRole", response.role);
+            
+            updateUIForLoggedInUser(username, response.role);
+            
+            $('#loaderModal').modal('hide');
+            toastr.success("Đăng nhập thành công!", "Thành công");
         } else {
-            toastr.error('Tên đăng nhập hoặc mật khẩu không chính xác!', 'Lỗi'); // Thông báo bằng Toastr
+            toastr.error("Tên đăng nhập hoặc mật khẩu không chính xác!", "Lỗi");
         }
+    }).fail(function() {
+        toastr.error("Lỗi kết nối đến server!", "Lỗi");
     });
 });
+
+// 📌 6. Xử lý đăng xuất khi người dùng nhấn nút
+$('#loginButton').click(function() {
+    if ($(this).text() === "Đăng xuất") {
+        logoutUser();
+    } else {
+        $('#loginModal').modal('show');
+    }
+});
+
+// 📌 7. Đăng xuất và cập nhật UI ngay lập tức
+function logoutUser() {
+    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("lastLoginCheck");
+    localStorage.removeItem("loggedInRole");
+
+    updateUIForLoggedOutUser();
+    toastr.success("Bạn đã đăng xuất thành công!", "Đăng xuất");
+ 
+}
+
+// 📌 8. Ẩn nội dung bảo vệ khi đăng xuất
+function hideProtectedContent() {
+    $('.protected-content').addClass('hidden-content');
+    $('.admin-content').addClass('blur-content');
+}
+
+// 📌 9. Hiển thị nội dung bảo vệ theo quyền
+function showProtectedContent(role) {
+    $('.protected-content').removeClass('hidden-content');
+
+    if (role === 'admin') {
+        $('.admin-content').removeClass('blur-content');
+    } else {
+        $('.admin-content').addClass('blur-content');
+    }
+}
+
+// 📌 10. Khi trang tải lên, kiểm tra trạng thái đăng nhập
+$(document).ready(function() {
+    initializePage();
+    var savedUser = localStorage.getItem('loggedInUser');
+    if (savedUser) {
+        checkLoginStatus(savedUser);
+    }
+});
+
+
+
 
 
 </script>

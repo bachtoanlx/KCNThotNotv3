@@ -19,6 +19,7 @@
     pointer-events: none;
 }
 
+
     </style>
 </head>
 <body>
@@ -33,7 +34,7 @@
                     <div class="admin-content"> <!-- Bảo vệ nội dung của admin-->    
                     <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->   
                         <div class="card-body">
-                        <h5 class="mb-3">Google Sheets Data QLCT 2024</h5>
+                        <h5 class="mb-3">Google Data QLCT 2025</h5>
     
                         <!-- Ô tìm kiếm với Bootstrap -->
                         <div class="input-group mb-3">
@@ -137,37 +138,29 @@ document.addEventListener('DOMContentLoaded', function() {
         rows.forEach(function(row) {
             var tr = document.createElement('tr');
             row.forEach(function(cellValue, index) {
-    if (!columnsToHide.includes(index)) {
-        var td = document.createElement('td');
+                if (!columnsToHide.includes(index)) {
+                    var td = document.createElement('td');
+                    // Kiểm tra nếu cột này là cột H (index = 7)
+                     if (index === 6) { 
+                        var a = document.createElement('a');
+                    a.href = cellValue;  // Link từ Google Sheets
+                    a.textContent = "Mở link";  // Văn bản hiển thị
+                    a.target = "_blank";  // Mở tab mới khi nhấn
+                    td.appendChild(a);
+                } else {
+                     td.textContent = cellValue;
+                }
 
-        // Kiểm tra nếu cột này là cột H (index = 6)
-        if (index === 6) { 
-    if (cellValue && cellValue.startsWith("http")) { 
-        var a = document.createElement('a');
-        a.href = cellValue;  
-        a.textContent = "Mở link";  
-        a.target = "_blank";  
-        a.style.color = "blue";  // Link màu xanh
-        td.appendChild(a);
-    } else {
-        td.innerHTML = `<span style="color:red; font-weight:bold;">No link</span>`;  
-    }
-
-        } else {
-            td.textContent = cellValue;
-        }
-
-        tr.appendChild(td);
-    }
-});
+                    tr.appendChild(td);
+                }
+                
+            });
             //nếu hàng ko có lik thì thêm &nbsp để giữ bố cục
             while (tr.children.length < headerRowElement.children.length - 2) { 
                 var emptyTd = document.createElement('td');
                 emptyTd.innerHTML = "&nbsp;";
                 tr.appendChild(emptyTd);
             }
-
-
             // Lấy ID từ cột đầu tiên của mỗi hàng
             var id = row[0];
             // Tạo nút chỉnh sửa
@@ -178,24 +171,20 @@ document.addEventListener('DOMContentLoaded', function() {
             editButton.dataset.id = id;
             editButton.dataset.row = JSON.stringify(row); // Lưu trữ hàng dưới dạng chuỗi JSON
 
-// Xử lý sự kiện khi nhấn nút chỉnh sửa
+            // Xử lý sự kiện khi nhấn nút chỉnh sửa
             editButton.addEventListener('click', function() {
                 // Hiển thị modal xác nhận mật khẩu trước
                 $('#confirmModal').modal('show');
                 
-                // Xử lý sự kiện khi nhấn nút xác nhận mật khẩu
                 $('#confirmDeleteBtn').off().on('click', function() {
                     var passwordInput = document.getElementById('passwordInput');
                     var passwordFeedback = document.getElementById('passwordFeedback');
                     
-                    // Kiểm tra mật khẩu
                     if (passwordInput.value === '1111') {
                         passwordFeedback.style.display = 'none';
                         $('#confirmModal').modal('hide');
-                        
-                        // Sau khi mật khẩu đúng, hiển thị modal chỉnh sửa
                         var editModalBody = document.getElementById('editModalBody');
-                        editModalBody.innerHTML = ''; // Xóa nội dung cũ của modal
+                        editModalBody.innerHTML = ''; 
                         var rowData = JSON.parse(editButton.dataset.row);
                         
                         rowData.forEach(function(cellValue, index) {
@@ -203,14 +192,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 var div = document.createElement('div');
                                 div.classList.add('form-group');
                                 var label = document.createElement('label');
-                                label.textContent = headerRowElement.children[index].textContent; // Sử dụng headerRowElement ở đây
+                                label.textContent = headerRowElement.children[index].textContent;
                                 var input = document.createElement('input');
                                 input.type = 'text';
                                 input.classList.add('form-control');
                                 input.value = cellValue;
                                 input.dataset.index = index;
                                 
-                                // Kiểm tra nếu là cột 1, 2 hoặc 3, thêm thuộc tính readonly
                                 if (index === 0 || index === 1 || index === 2) {
                                     input.readOnly = true;
                                 }
@@ -244,19 +232,46 @@ document.addEventListener('DOMContentLoaded', function() {
             editTd.appendChild(editButton);
             tr.appendChild(editTd);
 
+// Hàm cập nhật hàng
+function updateRow(id, updatedRow) {
+    $('#loadingModal').modal('show');
+    fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: 'edit', id: id, updatedRow: updatedRow }), // Thêm trường "action" là "edit"
+        mode: 'no-cors'
+    }).then(() => {
+        console.log('Đã cập nhật hàng thành công (giả định).');
+        $('#loadingModal').modal('hide');
+        toastr.success('Dữ liệu đã Cập nhật thành công!', 'Thành công'); // Thông báo bằng Toastr
+        // Tự động 2 giây và reload trang
+        setTimeout(function () {
+                        window.location.reload(); // Reload trang
+                    }, 2000);
+    }).catch(error => {
+        console.error('Lỗi khi cập nhật hàng:', error);
+        $('#loadingModal').modal('hide');
+    });
+}
+
+
+
             // Tạo nút xóa
             var deleteTd = document.createElement('td');
             var deleteButton = document.createElement('button');
             deleteButton.textContent = 'Xóa';
             deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
-            deleteButton.dataset.id = id; // Gán ID cho thuộc tính dataset
+            deleteButton.dataset.id = id;
             deleteButton.addEventListener('click', function() {
                 $('#confirmModal').modal('show');
                 $('#confirmDeleteBtn').off().on('click', function() {
                     var password = $('#passwordInput').val();
-                    // Kiểm tra mật khẩu ở đây
+                    console.log('Mật khẩu nhập vào:', password);
                     if (password === '1111') {
-                        deleteRow(id); // Sử dụng ID khi gọi hàm xóa
+                        console.log('Mật khẩu đúng, gọi deleteRow với ID:', id);
+                        deleteRow(id);
                         $('#confirmModal').modal('hide');
                     } else {
                         $('#passwordFeedback').show();
@@ -268,10 +283,55 @@ document.addEventListener('DOMContentLoaded', function() {
             dataBodyElement.appendChild(tr);
         });
     }
+
+//Hàm xóa dữ liệu + file
+function deleteRow(id) {
+    $('#loadingModal').modal('show');
+
+    // Tìm hàng có ID khớp
+    var rows = document.querySelectorAll('#data-body tr');
+    var fileUrl = '';
+    var targetRow = null; // Hàng cần xóa
+
+    rows.forEach(row => {
+        var cellId = row.cells[0] ? row.cells[0].textContent.trim() : '';
+        if (cellId === id) {
+            targetRow = row; // Lưu lại hàng tìm thấy
+            // Kiểm tra nếu cột G có thẻ <a> (Hyperlink)
+            var fileTd = row.cells[5];
+            var fileLinkElement = fileTd ? fileTd.querySelector('a') : null;
+            fileUrl = fileLinkElement ? fileLinkElement.getAttribute('href') : ''; // Lấy href thay vì textContent
+        }
+    });
+
+    console.log('ID cần xóa:', id);
+    console.log('File URL:', fileUrl);
+
+    fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id: id, fileUrl: fileUrl }), // Gửi cả URL
+        mode: 'no-cors'
+    }).then(() => {
+        console.log('Đã gửi yêu cầu xóa thành công.');
+        $('#loadingModal').modal('hide');
+        toastr.success('Dữ liệu đã Xóa thành công!', 'Thành công');
+                // Nếu tìm thấy hàng thì xóa khỏi giao diện
+                if (targetRow) {
+                targetRow.remove();  
+            }
+    }).catch(error => {
+        console.error('Lỗi khi xóa hàng:', error);
+        $('#loadingModal').modal('hide');
+    });
+}
+
+
+
             // Lắng nghe sự kiện khi nhập vào ô tìm kiếm
-var searchInput = document.getElementById('searchInput');
-var rowsPerPageSelect = document.getElementById('rowsPerPage');
-var currentRowsPerPage = 7; // Mặc định hiển thị 7 dòng
+            var searchInput = document.getElementById('searchInput');
+            var rowsPerPageSelect = document.getElementById('rowsPerPage');
+            var currentRowsPerPage = 7; // Mặc định hiển thị 7 dòng
 
 // Xử lý sự kiện khi thay đổi số dòng hiển thị
 rowsPerPageSelect.addEventListener('change', function() {
@@ -317,53 +377,8 @@ searchInput.addEventListener('blur', function() {
         }
     });
 });  
-    // Hàm xóa hàng
-    function deleteRow(id) {
-    $('#loadingModal').modal('show');
-    fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ action: 'delete', id: id }), // Thêm trường "action" là "delete"
-        mode: 'no-cors'
-    }).then(() => {
-        console.log('Đã xóa hàng thành công (giả định).');
-        $('#loadingModal').modal('hide');
-        toastr.success('Dữ liệu đã Xóa thành công!', 'Thành công'); // Thông báo bằng Toastr
-        // Tự động 2 giây và reload trang
-        setTimeout(function () {
-                        window.location.reload(); // Reload trang
-                    }, 2000);
-    }).catch(error => {
-        console.error('Lỗi khi xóa hàng:', error);
-        $('#loadingModal').modal('hide');
-    });
-}
 
-// Hàm cập nhật hàng
-function updateRow(id, updatedRow) {
-    $('#loadingModal').modal('show');
-    fetch('https://script.google.com/macros/s/AKfycbzg9lkoiVZeVE7kXcDV7gVa7lijeXjP-tAHukkv4lac5fXNzBJNOLYQEiSyu9cVgkmy/exec', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ action: 'edit', id: id, updatedRow: updatedRow }), // Thêm trường "action" là "edit"
-        mode: 'no-cors'
-    }).then(() => {
-        console.log('Đã cập nhật hàng thành công (giả định).');
-        $('#loadingModal').modal('hide');
-        toastr.success('Dữ liệu đã Cập nhật thành công!', 'Thành công'); // Thông báo bằng Toastr
-        // Tự động 2 giây và reload trang
-        setTimeout(function () {
-                        window.location.reload(); // Reload trang
-                    }, 2000);
-    }).catch(error => {
-        console.error('Lỗi khi cập nhật hàng:', error);
-        $('#loadingModal').modal('hide');
-    });
-}
+
 
         // Tải nội dung từ modals.html và chèn vào trang hiện tại
         $(document).ready(function() {

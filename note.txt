@@ -1,0 +1,2 @@
+sửa lại cơ chế xác thự mật khẩu trang, thông qua GAS, chỉ gửi user kiểm tra trên GAS nếu có thì dò tiếp pass tránh lộ pass
+bổ sung modals loader khi chờ kiểm tra đăng nhập
