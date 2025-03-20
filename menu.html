@@ -208,7 +208,7 @@ function initializePage(retry = false) {
         console.log("✅ User từ localStorage:", savedData.username);
         updateUIForLoggedInUser(savedData.username, savedData.role);
     } else if (!retry) {
-        setTimeout(() => initializePage(true), 1000); // 🔄 Nếu chưa có dữ liệu, thử lại sau 1 giây
+        setTimeout(() => initializePage(true), 2000); // 🔄 Nếu chưa có dữ liệu, thử lại sau 2 giây
     } else {
         console.warn("❌ Không có dữ liệu đăng nhập, hiển thị modal");
         $('#loginModal').modal('show');
