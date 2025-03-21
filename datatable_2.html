@@ -328,41 +328,37 @@ function deleteRow(id) {
 
 
 
-            // Lắng nghe sự kiện khi nhập vào ô tìm kiếm
-            var searchInput = document.getElementById('searchInput');
-            var rowsPerPageSelect = document.getElementById('rowsPerPage');
-            var currentRowsPerPage = 7; // Mặc định hiển thị 7 dòng
+           
+// Bắt đầu seach
+var searchInput = document.getElementById('searchInput');
+var rowsPerPageSelect = document.getElementById('rowsPerPage');
+var currentRowsPerPage = 7; // Mặc định hiển thị 7 dòng
 
 // Xử lý sự kiện khi thay đổi số dòng hiển thị
 rowsPerPageSelect.addEventListener('change', function() {
     var selectedValue = rowsPerPageSelect.value;
-
-    if (selectedValue === 'all') {
-        currentRowsPerPage = dataRows.length; // Hiển thị tất cả
-    } else {
-        currentRowsPerPage = parseInt(selectedValue);
-    }
-
+    currentRowsPerPage = (selectedValue === 'all') ? dataRows.length : parseInt(selectedValue);
     showDataRows(dataRows.slice(0, currentRowsPerPage));
 });
 
-// Xử lý sự kiện khi nhập vào ô tìm kiếm
+// Xử lý tìm kiếm theo thời gian thực
 searchInput.addEventListener('input', function() {
     var searchText = searchInput.value.trim().toLowerCase();
 
-    var filteredRows = dataRows.filter(function(row) {
-        return row.some(function(cellValue) {
-            return cellValue.toString().toLowerCase().includes(searchText);
+    if (searchText === "") {
+        showDataRows(dataRows.slice(0, currentRowsPerPage)); // Nếu trống, hiển thị lại danh sách gốc
+    } else {
+        var filteredRows = dataRows.filter(function(row) {
+            return row.some(function(cellValue) {
+                return cellValue.toString().toLowerCase().includes(searchText);
+            });
         });
-    });
-
-    showDataRows(filteredRows); // Hiển thị tất cả kết quả tìm kiếm
+        showDataRows(filteredRows); // Hiển thị kết quả tìm kiếm
+    }
 });
 
-// Khi nhấp chuột ra ngoài ô tìm kiếm, hiển thị lại số dòng đã chọn trước đó
-searchInput.addEventListener('blur', function() {
-    showDataRows(dataRows.slice(0, currentRowsPerPage));
-});
+
+// Kết thúc seach
 
         // Nút chọn số hàng hiển thị
         var rowsPerPageSelect = document.getElementById('rowsPerPage');
